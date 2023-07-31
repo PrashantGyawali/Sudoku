@@ -10,3 +10,7 @@ Run the main.exe or compiler it yourself
 - create proper main menu with game modes like new game, saved games, quick match, timemode, no hints, no ai, open grid and fixed grid(cant change the starting numbers, colored green etc)
 - make better tutorial
 - Remove unncessary code and use structures for readability 
+
+#### Game Images
+
+![Alt text](./board.png)
