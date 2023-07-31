@@ -188,7 +188,7 @@ int main() {
         //manual entry mode
         if(mode==2)
         {     
-            check_board_show_Errors(playing_grid,errorgrid);
+            check_board_show_Errors(playing_grid,errorgrid,initial_grid);
             display_board(playing_grid, selected_cell_row, selected_cell_column,errorgrid,initial_grid);
         }
 
@@ -219,7 +219,7 @@ int main() {
         key = getch();
 
         // handle numkeys   
-        if (key >= 48 && key <= 57) 
+        if (key >= 48 && key <= 57 && initial_grid[selected_cell_row][selected_cell_column]==0) 
         {  
             playing_grid[selected_cell_row][selected_cell_column] = key - 48;
         }

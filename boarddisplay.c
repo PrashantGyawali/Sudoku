@@ -84,7 +84,7 @@ bool is_valid_board(int errorgrid[9][9]){
     return true;
 }
 
-void check_board_show_Errors(int a[9][9],int errorblocks[9][9])
+void check_board_show_Errors(int a[9][9],int errorblocks[9][9],int initial_grid[9][9])
 {   int i,j;
 
     //clear the previous error tracker array 
@@ -95,13 +95,23 @@ void check_board_show_Errors(int a[9][9],int errorblocks[9][9])
             errorblocks[i][j]=0;
         }
     }
+
     //check the columns for duplicates
     int coldups[9]={0,0,0,0,0,0,0,0,0};
-    for(j=0;j<9;j++)
+    for(j=0;j<9;j++) 
         {
+            //first check all the initial grid elements
             for(i=0;i<9;i++)
             {
-                if((a[i][j]-1)>=0)
+                if(initial_grid[i][j]!=0)
+                {
+                coldups[initial_grid[i][j]-1]++;
+                }
+            }
+            //then move on to other elements (Prevents initial elements from being marked as duplicate)
+            for(i=0;i<9;i++)
+            {
+                if((a[i][j]-1)!=0 && initial_grid[i][j]==0)
                 {
                     coldups[a[i][j]-1]++;
                     if(coldups[a[i][j]-1]>1) //contains duplicate means updating the errorarray to colour the other dups with red color
@@ -110,17 +120,28 @@ void check_board_show_Errors(int a[9][9],int errorblocks[9][9])
                     };
                 }
             }
+        
+        //clear the col dups for checking next column
         for(i=0;i<9;i++)
         {
             coldups[i]=0;
         }
         }
         
-
 //check the rows
 int rowdups[9]={0,0,0,0,0,0,0,0,0};
 for(i=0;i<9;i++)
 {
+    //first check all the initial grid elements
+    for(j=0;j<9;j++)
+    {
+        if(initial_grid[i][j]!=0)
+        {
+        rowdups[initial_grid[i][j]-1]++;
+        }
+    }
+
+    //then move on to other elements (Prevents initial elements from being marked as duplicate)
     for(j=0;j<9;j++)
     {
         if((a[i][j]-1)>=0)
@@ -140,16 +161,28 @@ for(i=0;i<9;i++)
     }
 }
 
-
 //check all the squares
     int sqdups[9]={0,0,0,0,0,0,0,0,0};
 
-    int k=0,sum=0,row=0,col=0;
+    int k=0,row=0,col=0;
 
     for(row=0;row<9;row+=3)
     {   
         for(col=0;col<9;col+=3)
-        { int sum=0;
+        {  
+            //check the initial grid elements
+            for(i=row;i<row+3;i++)
+            {
+                for(j=col;j<col+3;j++)
+                {
+                    if(initial_grid[i][j]!=0)
+                    {
+                    sqdups[initial_grid[i][j]-1]++;
+                    }
+                }
+            }
+
+            //check the normal elements
             for(i=row;i<row+3;i++)
             {
                     for(j=col;j<col+3;j++)
@@ -164,6 +197,8 @@ for(i=0;i<9;i++)
                         }
                     }
             }
+
+            //empty the previous array for checking next square
             for(i=0;i<9;i++)
             {
                 sqdups[i]=0;
