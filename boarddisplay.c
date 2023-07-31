@@ -1,45 +1,56 @@
-#define BOARDSIZE 9
 #include<stdlib.h>
 #include<stdbool.h>
 
-void displayCell(int value, int isSelected, int errored) {
-    if (isSelected) 
-    {
-        value!=0?printf("\033[97;107m %d \033[0m", value):printf("\033[97;107m   \033[0m");
-    } 
-    else {
-        value!=0?errored==1?printf("\033[0;31m %d \033[0m", value):printf(" %d ", value):printf("   ");
+void display_cell(int value, int isSelected, int errored,int initial) {
+if (isSelected) {
+    if (value != 0) {
+        printf("\033[97;107m %d \033[0m", value);
+    } else {
+        printf("\033[97;107m   \033[0m");
     }
+} else {
+    if (value != 0) {
+        if (initial == 1) {
+            printf("\033[0;34m %d \033[0m", value); // Green color for initial value
+        } else if (errored == 1) {
+            printf("\033[0;31m %d \033[0m", value); // Red color for errored value
+        } else {
+            printf(" %d ", value);
+        }
+    } else {
+        printf("   ");
+    }
+}
 }
 
 void clearScreen() {
     system("cls");
 }
 
-void displayBoard(int elements[BOARDSIZE][BOARDSIZE], int selected_cell_row, int selected_cell_column, int errorblock[BOARDSIZE][BOARDSIZE]) 
+void display_board(int elements[9][9], int selected_cell_row, int selected_cell_column, int errorblock[9][9],int initial_grid[9][9]) 
 {
     clearScreen();
     int i, j;
     printf("\033[1m+===+===+===+===+===+===+===+===+===+\033[0m\n");
-    for (i = 0; i < BOARDSIZE; i++) {
-        for (j = 0; j <= BOARDSIZE-1; j++) {
+    for (i = 0; i < 9; i++) {
+        for (j = 0; j <= 9-1; j++) {
             if (j % 3 == 0) {
                 printf("\033[1m|\033[0m");
                 printf("");
-                displayCell(elements[i][j], i == selected_cell_row && j == selected_cell_column,errorblock[i][j]==1);
+                display_cell(elements[i][j], i == selected_cell_row && j == selected_cell_column,errorblock[i][j]==1,initial_grid[i][j]!=0);
             }
             else {
                 printf(":");
-                displayCell(elements[i][j], i == selected_cell_row && j == selected_cell_column,errorblock[i][j]==1);
+                display_cell(elements[i][j], i == selected_cell_row && j == selected_cell_column,errorblock[i][j]==1,initial_grid[i][j]!=0);
             }
 
-            if(j==BOARDSIZE-1)
+            if(j==9-1)
             {
                 printf("\033[1m|\033[0m");
             }
         }
         printf("\n");
-        for (j = 0; j < BOARDSIZE; j++) {
+        for (j = 0; j < 9; j++) {
             if (j == 0) {
                 if (i % 3 == 2) {
                     printf("\033[1m+===+\033[0m");
@@ -59,7 +70,7 @@ void displayBoard(int elements[BOARDSIZE][BOARDSIZE], int selected_cell_row, int
     }
 }
 
-bool validboard(int errorgrid[BOARDSIZE][BOARDSIZE]){
+bool is_valid_board(int errorgrid[9][9]){
     for (int i=0;i<9;i++)
     {
         for(int j=0;j<9;j++)
@@ -73,7 +84,7 @@ bool validboard(int errorgrid[BOARDSIZE][BOARDSIZE]){
     return true;
 }
 
-void checkBoardShowErrors(int a[9][9],int errorblocks[BOARDSIZE][BOARDSIZE])
+void check_board_show_Errors(int a[9][9],int errorblocks[9][9])
 {   int i,j;
 
     //clear the previous error tracker array 
@@ -159,5 +170,61 @@ for(i=0;i<9;i++)
             }
         } 
 
+    }
+}
+
+bool completevalid(int a[9][9])
+{
+    int row_sum=0;
+    int row_product=1;
+    int col_sum=0;
+    int col_product=1;
+    //check 
+    for(int i=0;i<9;i++)
+        {
+            for(int j=0;j<9;j++)
+            {
+            row_sum+=a[i][j];
+            row_product*=a[i][j];
+            col_sum+=a[j][i];
+            col_product*=a[j][i];
+            }
+        }
+    if(row_sum!=45 ||col_sum!=45||row_product!=362880 ||col_product!=362880)
+    {
+        return false;
+    }
+
+    for(int row=0;row<9;row+=3)
+    {   
+        for(int col=0;col<9;col+=3)
+        { int sum=0,product=1;
+            for(int i=row;i<row+3;i++)
+            {
+                    for(int j=col;j<col+3;j++)
+                    {
+                        sum+=a[i][j];
+                        product*=a[i][j];
+                    }
+            }
+            if(sum!=45 || product!=362880)
+            {
+                return false;
+            }
+        } 
+    }
+
+    return true;
+}
+
+//copies grid from source to destination
+void copy_grid(int src[9][9],int destination[9][9])
+{
+    for(int i=0;i<9;i++)
+    {
+        for(int j=0;j<9;j++)
+        {
+            destination[i][j]=src[i][j];
+        }
     }
 }

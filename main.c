@@ -8,6 +8,9 @@
 
 bool slow=true;
 
+
+
+//finds the first empty cell in grid 
 bool find_empty_cell(int grid[N][N], int *row, int *col) {
     for (*row = 0; *row < N; (*row)++) {
         for (*col = 0; *col < N; (*col)++) {
@@ -19,6 +22,7 @@ bool find_empty_cell(int grid[N][N], int *row, int *col) {
     return false; // No empty cell found
 }
 
+//checks if move is safe or not
 bool is_safe(int grid[N][N], int row, int col, int num) {
 
     // Check if 'num' is not present in the current row, column, and box
@@ -41,9 +45,8 @@ bool is_safe(int grid[N][N], int row, int col, int num) {
     return true;
 }
 
-
-
-bool solve_sudoku(int grid[N][N],int selected_cell_column,int selected_cell_row,int errorgrid[N][N],bool slow) {
+// Solves the sudoku board, has choice for speed, and rendering or not as well as selected row and column(used for rendering)
+bool solve_sudoku(int grid[N][N],int selected_cell_column,int selected_cell_row,int errorgrid[N][N],int initial_grid[N][N],bool slow,bool display) {
     int row, col;
     // Find an empty cell (0) in the grid
     if (!find_empty_cell(grid, &row, &col)) {
@@ -56,13 +59,16 @@ bool solve_sudoku(int grid[N][N],int selected_cell_column,int selected_cell_row,
 
     // Try placing digits from 1 to 9 in the empty cell
     for (int num = 1; num <= 9; num++) {
-        displayBoard(grid,selected_cell_column,selected_cell_row,errorgrid);
+        if(display)
+        {
+            display_board(grid,selected_cell_column,selected_cell_row,errorgrid,initial_grid);
+        }
 
         if (is_safe(grid, row, col, num)) {
             // If the digit is safe, place it
             grid[row][col] = num;
             // Recursively solve the remaining grid
-            if (solve_sudoku(grid,selected_cell_column,selected_cell_row,errorgrid,slow)) {
+            if (solve_sudoku(grid,selected_cell_column,selected_cell_row,errorgrid,initial_grid,slow,display)) {
                 return true; // Found a solution
             }
 
@@ -75,8 +81,58 @@ bool solve_sudoku(int grid[N][N],int selected_cell_column,int selected_cell_row,
     return false;
 }
 
+
+void generateboard(int emptyboard[9][9])
+{   
+    int errorgrid[9][9]= {
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0}
+        };
+
+    //PUTTING THE FIRST 12 ENTRIES
+    int iterations=0;
+    emptyboard[rand()%10][rand()%10]=rand()%10;
+
+    while(iterations<12)
+    {
+    int t=rand()%10;
+        while(!is_safe(emptyboard,rand()%10,rand()%10,t))
+        {
+            t=rand()%10;
+        }
+    iterations++;
+    }
+
+    //Giving ai to complete the remaining board
+    solve_sudoku(emptyboard,0,0,errorgrid,emptyboard,false,false);
+
+    //remove half of the digits
+    for(int i=0;i<50;)
+    {
+        int r=rand()%10;
+        int c=rand()%10;
+
+        if(emptyboard[r][c]!=0)
+        {
+            emptyboard[r][c]=0;
+            i++;
+        }
+    }
+}
+
+
 int main() {
+    //take inputs is ai_allowed, hints_allowed , init_board
     int mode=2;
+
+
     int selected_cell_row = 4, selected_cell_column = 4;
 
     printf("Sudoku game\n How to play?:\n");
@@ -87,18 +143,21 @@ int main() {
     printf("Enter Esc to quit\n");
     printf("Press any key to continue");
     getch();
+    
     //initial grid
-    int sudokuGrid[N][N] = {
-        {5, 3, 0, 6, 0, 8, 9, 0, 2},
-        {6, 0, 2, 1, 0, 5, 0, 4, 0},
-        {1, 0, 0, 3, 4, 2, 5, 0, 7},
-        {0, 0, 0, 0, 6, 1, 4, 0, 3},
-        {4, 0, 6, 8, 0, 0, 7, 0, 0},
-        {7, 0, 0, 9, 2, 0, 8, 5, 6},
-        {9, 6, 1, 5, 3, 7, 2, 0, 0},
-        {2, 8, 0, 4, 1, 9, 0, 3, 5},
-        {3, 4, 0, 2, 8, 0, 1, 0, 0}
-    };
+    int initial_grid[9][9]={
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0}
+        };
+
+    int playing_grid[N][N];
 
     //used for coloring the duplicate numbers. if duplicate the 0 changes to 1
     int errorgrid[N][N]= 
@@ -114,40 +173,41 @@ int main() {
         {0, 0, 0, 0, 0, 0, 0, 0, 0}
         };
 
-
-
+        printf("\nGenerating New Board...");
+        generateboard(initial_grid);
+        copy_grid(initial_grid,playing_grid);
 
     int key;
     do {
         //makes the cursor jump from one end to other end
-        selected_cell_row = selected_cell_row > (BOARDSIZE - 1) ? 0 : selected_cell_row;
-        selected_cell_column = selected_cell_column > (BOARDSIZE - 1) ? 0 : selected_cell_column;
-        selected_cell_row = selected_cell_row < 0 ? (BOARDSIZE - 1) : selected_cell_row;
-        selected_cell_column = selected_cell_column < 0 ? (BOARDSIZE - 1) : selected_cell_column;
+        selected_cell_row = selected_cell_row > (9 - 1) ? 0 : selected_cell_row;
+        selected_cell_column = selected_cell_column > (9 - 1) ? 0 : selected_cell_column;
+        selected_cell_row = selected_cell_row < 0 ? (9 - 1) : selected_cell_row;
+        selected_cell_column = selected_cell_column < 0 ? (9 - 1) : selected_cell_column;
 
         //manual entry mode
         if(mode==2)
         {     
-            checkBoardShowErrors(sudokuGrid,errorgrid);
-            displayBoard(sudokuGrid, selected_cell_row, selected_cell_column, errorgrid);
+            check_board_show_Errors(playing_grid,errorgrid);
+            display_board(playing_grid, selected_cell_row, selected_cell_column,errorgrid,initial_grid);
         }
 
         //algorithmic solving mode
         if(mode==1)
         {
-            if(validboard(errorgrid))
+            if(is_valid_board(errorgrid))
             {
-                if (solve_sudoku(sudokuGrid,selected_cell_row,selected_cell_column,errorgrid,slow)) {
-                    displayBoard(sudokuGrid,selected_cell_row,selected_cell_column,errorgrid);
+                if (solve_sudoku(playing_grid,selected_cell_row,selected_cell_column,errorgrid,initial_grid,slow,true)) {
+                    display_board(playing_grid,selected_cell_row,selected_cell_column,errorgrid,initial_grid);
                     printf("This is the required Sudoku solution\n");
                 }
                 else {
-                    displayBoard(sudokuGrid,selected_cell_row,selected_cell_column,errorgrid);
+                    display_board(playing_grid,selected_cell_row,selected_cell_column,errorgrid,initial_grid);
                     printf("No solution exists.\n");
                 }
             }
             else{
-                displayBoard(sudokuGrid,selected_cell_row,selected_cell_column,errorgrid);
+                display_board(playing_grid,selected_cell_row,selected_cell_column,errorgrid,initial_grid);
                 printf("Not valid board.\n");
             }
             mode=2;
@@ -161,7 +221,7 @@ int main() {
         // handle numkeys   
         if (key >= 48 && key <= 57) 
         {  
-            sudokuGrid[selected_cell_row][selected_cell_column] = key - 48;
+            playing_grid[selected_cell_row][selected_cell_column] = key - 48;
         }
 
         //handle arrwokeys
