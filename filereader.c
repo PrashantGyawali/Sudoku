@@ -3,6 +3,19 @@
 #include<stdbool.h>
 #include<stdlib.h>
 
+typedef struct SavedGamesdata{
+    int lastmodified;
+    struct Settings{
+    int ai;
+    int hint;
+    int gamemode;
+    int slow;
+    }settings;
+    int grid[9][9];
+}SavedGames;
+
+
+
 bool completevalid(int a[9][9])
 {
     //check 
@@ -50,8 +63,44 @@ bool completevalid(int a[9][9])
 
     return true;
 }
+
+SavedGames* read_games(int* numgames) {
+    FILE* fs = fopen("pastgames.txt", "rb");
+    if (fs == NULL) {
+        perror("Error opening file");
+        return NULL;
+    }
+
+    // Get the total number of records (size of file / size of a book structure)
+    fseek(fs, 0, SEEK_END);
+    long fileSize = ftell(fs);
+    *numgames = fileSize / sizeof(SavedGames);
+
+    // Allocate memory for the array of games
+    SavedGames* games = (SavedGames*)malloc((*numgames) * sizeof(SavedGames));
+    if (games == NULL) {
+        perror("Memory allocation error");
+        fclose(fs);
+        return NULL;
+    }
+
+    // Read the data from the file into the array of structures
+    rewind(fs); // Move file pointer back to the beginning
+    fread(games, sizeof(SavedGames), *numgames, fs);
+
+    fclose(fs);
+    return games;
+}
+
+
+void readdata(FILE*srcfile,struct SavedGames* games)
+{
+
+}
 int main()
 {
+
+
     int grid[9][9]= 
         {
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -64,10 +113,29 @@ int main()
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0}
         };
+        FILE *pastgames;
+        pastgames=fopen("pastgames.txt","rb");
+        int numgames;
 
-        FILE *startgrid;
-        startgrid=fopen("startgrids.txt","r");
-
+        SavedGames* games = read_games(&numgames);
+        FILE *fs;
+        fs=fopen("pastgames.txt","a+");
+        fseek(fs,0,SEEK_END);
+        SavedGames bk={
+            200,{0,0,0,0},{
+        {5, 3, 4, 6, 7, 8, 9, 1, 2},
+        {6, 7, 2, 1, 9, 5, 3, 4, 8},
+        {1, 9, 8, 3, 4, 2, 5, 6, 7},
+        {8, 5, 9, 7, 6, 1, 4, 2, 3},
+        {4, 2, 6, 8, 5, 3, 7, 9, 1},
+        {7, 1, 3, 9, 2, 4, 8, 5, 6},
+        {9, 6, 1, 5, 3, 7, 2, 8, 4},
+        {2, 8, 7, 4, 1, 9, 6, 3, 5},
+        {3, 4, 5, 2, 8, 6, 1, 7, 9}
+        }};
+        fwrite(&bk,sizeof(bk),1,fs);
+        fclose(fs);
+        
         int test_grid[9][9]={
         {5, 3, 4, 6, 7, 8, 9, 1, 2},
         {6, 7, 2, 1, 9, 5, 3, 4, 8},
@@ -80,8 +148,17 @@ int main()
         {3, 4, 5, 2, 8, 6, 1, 7, 9}
     };
     printf("%d",completevalid(test_grid));
-    printf("Random no less than 8 is:%d\n",rand()%8);
+    if (games != NULL) {
+
+            for (int i = 0; i < numgames; i++) {
+
+                    printf("+-------------------------------------------------------------------------------------------------------+\n");
+                    printf("%d,%d",games[i].lastmodified,games[i].settings.ai);
+
+            }
+    }
 
 
+    free(games); // Free the dynamically allocated memory for the array of books
 }
 
