@@ -20,7 +20,7 @@ void displayMenu(int selectedOption) {
     clearScreen();
 
     char menu_options[MENU_SIZE][50] = {"New Game", "Load Saved Games", "How to Play","Settings","Quit"};
-
+    printf("SUDOKU\n\n");
     // Display the menu options
     for (int i = 1; i <= MENU_SIZE; i++) {
         if (i == selectedOption) {
@@ -65,11 +65,12 @@ void displaySettings(int selectedoption,struct GameSettings *settings){
                 t=settings->slow;
                 }
         if (i == selectedoption) {
-            printf("> %s <\n", menu_options[i - 1][t]);
+            printf("< %s >\n", menu_options[i - 1][t]);
         } else {
             printf("  %s \n", menu_options[i - 1][t]);
         }
     }
+    printf("\n\nUse left and right arrow keys to change settings");
 }
 
 void SettingsMenu(struct GameSettings *settings){
