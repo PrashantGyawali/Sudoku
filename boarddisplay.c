@@ -11,7 +11,7 @@ if (isSelected) {
 } else {
     if (value != 0) {
         if (initial == 1) {
-            printf("\033[0;34m %d \033[0m", value); // Green color for initial value
+            printf("\033[0;34m %d \033[0m", value); // Blue color for initial value
         } else if (errored == 1) {
             printf("\033[0;31m %d \033[0m", value); // Red color for errored value
         } else {

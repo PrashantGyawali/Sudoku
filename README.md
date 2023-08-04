@@ -1,3 +1,5 @@
+# NOtE: There seems to be some problem so is unstable currently.
+
 # Sudoku
 Terminal sudoku with solver ai 
 ### How to run?
