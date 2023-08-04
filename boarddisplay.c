@@ -111,7 +111,7 @@ void check_board_show_Errors(int a[9][9],int errorblocks[9][9],int initial_grid[
             //then move on to other elements (Prevents initial elements from being marked as duplicate)
             for(i=0;i<9;i++)
             {
-                if((a[i][j]-1)!=0 && initial_grid[i][j]==0)
+                if(a[i][j]>0 && initial_grid[i][j]==0)
                 {
                     coldups[a[i][j]-1]++;
                     if(coldups[a[i][j]-1]>1) //contains duplicate means updating the errorarray to colour the other dups with red color
@@ -144,7 +144,7 @@ for(i=0;i<9;i++)
     //then move on to other elements (Prevents initial elements from being marked as duplicate)
     for(j=0;j<9;j++)
     {
-        if((a[i][j]-1)>=0)
+        if(a[i][j]>0 && initial_grid[i][j]==0)
         {
             rowdups[a[i][j]-1]++;
             if(rowdups[a[i][j]-1]>1)     //contains duplicate means updating the errorarray to colour the other dups with red color
@@ -187,7 +187,7 @@ for(i=0;i<9;i++)
             {
                     for(j=col;j<col+3;j++)
                     {
-                        if(a[i][j]>0)
+                        if(a[i][j]>0 && initial_grid[i][j]==0)
                         {
                             sqdups[a[i][j]-1]++;
                             if(sqdups[a[i][j]-1]>1) //contains duplicate means updating the errorarray to colour the other dups with red color

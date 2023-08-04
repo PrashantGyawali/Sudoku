@@ -98,15 +98,19 @@ void generateboard(int emptyboard[9][9])
 
     //PUTTING THE FIRST 12 ENTRIES
     int iterations=0;
-    emptyboard[rand()%10][rand()%10]=rand()%10;
+    emptyboard[1][1]=rand()%10;
+    emptyboard[4][5]=rand()%10;
 
-    while(iterations<12)
+    while(iterations<13)
     {
-    int t=rand()%10;
-        while(!is_safe(emptyboard,rand()%10,rand()%10,t))
+        int t=rand()%10;
+        int r=rand()%10;
+        int c=rand()%10;
+        while(!is_safe(emptyboard,r,c,t))
         {
             t=rand()%10;
         }
+        emptyboard[r][c]=t;
     iterations++;
     }
 
@@ -195,6 +199,7 @@ int main() {
         //algorithmic solving mode
         if(mode==1)
         {
+
             if(is_valid_board(errorgrid))
             {
                 if (solve_sudoku(playing_grid,selected_cell_row,selected_cell_column,errorgrid,initial_grid,slow,true)) {
