@@ -2,6 +2,7 @@
 #include <conio.h>
 #include <stdbool.h>
 #include<stdlib.h>
+#include "boardfunctions.h"
 #define MENU_SIZE 5
 
 struct GameSettings{
@@ -41,6 +42,27 @@ else{
 }
 }
 
+
+// TODO: make it page by page with players being allowed to go back to previous page or forward to new page. 
+// TODO: create funcitons for each page  and then create an array of pointers to those functions.
+// TODO: create variable "x" and increment or decrement x. the x will correspond to the page no or index of the array.
+void page1(int *pageno){printf("Page 1");}
+void page2(int *pageno){printf("Page 2");}
+void page3(int *pageno){printf("Page 3");}
+
+void tutorialmenu()
+{
+    int pageno;
+    void (*pagearray[4]) () ={page1,page2,page3};    
+    printf("Welcome to the tutorial");
+    scanf("%d",&pageno);
+    if(pageno<2)
+    {
+    pagearray[pageno](&pageno);
+    }
+}
+
+//function to format the display layout of the settings menu (without input logic)
 void displaySettings(int selectedoption,struct GameSettings *settings){
     clearScreen();
 
@@ -73,6 +95,7 @@ void displaySettings(int selectedoption,struct GameSettings *settings){
     printf("\n\nUse left and right arrow keys to change settings");
 }
 
+//Enter the settings menu (contains inputs and logics)
 void SettingsMenu(struct GameSettings *settings){
     int selectedOption=1;
     
@@ -138,6 +161,7 @@ int main() {
         case 2:
         break;
         case 3:
+        tutorialmenu();
         break;
         case 4:
         SettingsMenu(&settings);
