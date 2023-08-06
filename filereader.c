@@ -97,6 +97,8 @@ void readdata(FILE*srcfile,struct SavedGames* games)
 {
 
 }
+
+
 int main()
 {
 

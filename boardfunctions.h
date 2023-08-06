@@ -1,6 +1,11 @@
+#include<stdio.h>
 #include<stdlib.h>
 #include<stdbool.h>
+#include<conio.h>
+#include <time.h>
+#define N 9
 
+//displays each cell with proper coloring
 void display_cell(int value, int isSelected, int errored,int initial) {
 if (isSelected) {
     if (value != 0) {
@@ -23,10 +28,12 @@ if (isSelected) {
 }
 }
 
+//clears the screen
 void clearScreen() {
     system("cls");
 }
 
+//displays the entire board
 void display_board(int elements[9][9], int selected_cell_row, int selected_cell_column, int errorblock[9][9],int initial_grid[9][9]) 
 {
     clearScreen();
@@ -84,6 +91,7 @@ bool is_valid_board(int errorgrid[9][9]){
     return true;
 }
 
+//checks the board with the initial board and finds duplicate elements and updates the error board
 void check_board_show_Errors(int a[9][9],int errorblocks[9][9],int initial_grid[9][9])
 {   int i,j;
 
@@ -260,6 +268,134 @@ void copy_grid(int src[9][9],int destination[9][9])
         for(int j=0;j<9;j++)
         {
             destination[i][j]=src[i][j];
+        }
+    }
+}
+
+//finds the first empty cell in grid 
+bool find_empty_cell(int grid[N][N], int *row, int *col) {
+    for (*row = 0; *row < N; (*row)++) {
+        for (*col = 0; *col < N; (*col)++) {
+            if (grid[*row][*col] == 0) {
+                return true; // Found an empty cell
+            }
+        }
+    }
+    return false; // No empty cell found
+}
+
+//checks if move is safe or not
+bool is_safe(int grid[N][N], int row, int col, int num) {
+
+    // Check if 'num' is not present in the current row, column, and box
+
+    for (int i = 0; i < N; i++) {
+        if (grid[row][i] == num || grid[i][col] == num)
+            return false;
+    }
+
+    int startRow = row - row % 3;
+    int startCol = col - col % 3;
+
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            if (grid[i + startRow][j + startCol] == num)
+                return false;
+        }
+    }
+
+    return true;
+}
+
+// Solves the sudoku board, has choice for speed, and rendering or not as well as selected row and column(used for rendering)
+bool solve_sudoku(int grid[N][N],int selected_cell_column,int selected_cell_row,int errorgrid[N][N],int initial_grid[N][N],bool slow,bool display) {
+    int row, col;
+    // Find an empty cell (0) in the grid
+    if (!find_empty_cell(grid, &row, &col)) {
+        return true; // No empty cells, Sudoku is solved
+    }
+
+    if(slow)
+    {
+        if(row<3)
+        sleep(10);
+        else{
+            sleep(200/(9-row));
+        }
+    }
+
+    // Try placing digits from 1 to 9 in the empty cell
+    for (int num = 1; num <= 9; num++) {
+        if(display)
+        {
+            display_board(grid,selected_cell_column,selected_cell_row,errorgrid,initial_grid);
+        }
+
+        if (is_safe(grid, row, col, num)) {
+            // If the digit is safe, place it
+            grid[row][col] = num;
+            // Recursively solve the remaining grid
+            if (solve_sudoku(grid,selected_cell_column,selected_cell_row,errorgrid,initial_grid,slow,display)) {
+                return true; // Found a solution
+            }
+
+            // If placing the digit leads to an incorrect solution, backtrack
+            grid[row][col] = 0;
+        }
+    }
+
+    // If no digit can be placed in the empty cell, backtrack
+    return false;
+}
+
+//generates a new board
+void generateboard(int emptyboard[9][9])
+{   
+    int errorgrid[9][9]= {
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0}
+        };
+
+    //PUTTING THE FIRST 12 ENTRIES
+    srand(time(NULL));
+    int iterations=0;
+    emptyboard[0][0]=rand()%10;
+    emptyboard[3][3]=rand()%10;
+
+    while(iterations<13)
+    {
+        srand(time(NULL));
+        int t=rand()%10;
+        int r=rand()%10;
+        int c=rand()%10;
+        while(!is_safe(emptyboard,r,c,t))
+        {
+            t=rand()%10;
+        }
+        emptyboard[r][c]=t;
+    iterations++;
+    }
+
+    //Giving ai to complete the remaining board
+    solve_sudoku(emptyboard,0,0,errorgrid,emptyboard,false,false);
+
+    //remove half of the digits
+    for(int i=0;i<54;)
+    {
+        int r=rand()%10;
+        int c=rand()%10;
+
+        if(emptyboard[r][c]!=0)
+        {
+            emptyboard[r][c]=0;
+            i++;
         }
     }
 }
