@@ -54,7 +54,7 @@ void tutorialmenu()
 {
     int pageno;
     void (*pagearray[4]) () ={page1,page2,page3};    
-    printf("Welcome to the tutorial");
+    printf("Welcome to the tutorial\n Let's start.\n Use arrow keys to change pages");
     scanf("%d",&pageno);
     if(pageno<2)
     {

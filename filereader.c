@@ -5,16 +5,33 @@
 
 typedef struct SavedGamesdata{
     int lastmodified;
+    int id;
     struct Settings{
     int ai;
     int hint;
     int gamemode;
     int slow;
     }settings;
+
+    int initialgrid[9][9];
     int grid[9][9];
+    int errorgrid[9][9];
 }SavedGames;
 
-
+int* emptyboardinit(){
+    int a[9][9]={
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0}
+        };
+    return a;
+}
 
 bool completevalid(int a[9][9])
 {
@@ -99,9 +116,9 @@ void readdata(FILE*srcfile,struct SavedGames* games)
 }
 
 
-int main()
+void main()
 {
-
+    int selectedgame=0;
 
     int grid[9][9]= 
         {
@@ -124,7 +141,7 @@ int main()
         fs=fopen("pastgames.txt","a+");
         fseek(fs,0,SEEK_END);
         SavedGames bk={
-            200,{0,0,0,0},{
+            200,1,{0,0,0,0},{
         {5, 3, 4, 6, 7, 8, 9, 1, 2},
         {6, 7, 2, 1, 9, 5, 3, 4, 8},
         {1, 9, 8, 3, 4, 2, 5, 6, 7},
@@ -134,7 +151,7 @@ int main()
         {9, 6, 1, 5, 3, 7, 2, 8, 4},
         {2, 8, 7, 4, 1, 9, 6, 3, 5},
         {3, 4, 5, 2, 8, 6, 1, 7, 9}
-        }};
+        },emptyboardinit(),emptyboardinit()};
         fwrite(&bk,sizeof(bk),1,fs);
         fclose(fs);
         
@@ -149,14 +166,18 @@ int main()
         {2, 8, 7, 4, 1, 9, 6, 3, 5},
         {3, 4, 5, 2, 8, 6, 1, 7, 9}
     };
-    printf("%d",completevalid(test_grid));
-    if (games != NULL) {
-
-            for (int i = 0; i < numgames; i++) {
-
-                    printf("+-------------------------------------------------------------------------------------------------------+\n");
-                    printf("%d,%d",games[i].lastmodified,games[i].settings.ai);
-
+        // printf("%d",completevalid(test_grid)); //for testing
+        if (games != NULL) {
+            printf("+ID----Last Modified----Ai--+\n");
+            for (int i = 0; i < numgames; i++)
+            {
+                    if(i==selectedgame)
+                    {
+                    printf("\033[47;30m %d \t %d \t\t %d \033[0m\n",games[i].id ,games[i].lastmodified,games[i].settings.ai);
+                    }
+                    else{
+                    printf(" %d \t %d \t\t %d \n",games[i].id ,games[i].lastmodified,games[i].settings.ai);
+                    }
             }
     }
 
