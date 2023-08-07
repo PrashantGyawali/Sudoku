@@ -32,13 +32,25 @@ void displayMenu(int selectedOption) {
     }
 }
 
-void toggle(int *a){
-if((*a)==1)
+void toggle(int *a,int min, int max,int direction){
+if(direction==1)
 {
-    (*a)=0;
+    if((*a)==max)
+    {
+        (*a)=min;
+    }
+    else{
+        (*a)+=1;
+    }
 }
-else{
-    (*a)=1;
+if(direction==0){
+if((*a)==min)
+    {
+        (*a)=max;
+    }
+    else{
+        (*a)=(*a)-1;
+    }
 }
 }
 
@@ -46,20 +58,34 @@ else{
 // TODO: make it page by page with players being allowed to go back to previous page or forward to new page. 
 // TODO: create funcitons for each page  and then create an array of pointers to those functions.
 // TODO: create variable "x" and increment or decrement x. the x will correspond to the page no or index of the array.
-void page1(int *pageno){printf("Page 1");}
-void page2(int *pageno){printf("Page 2");}
-void page3(int *pageno){printf("Page 3");}
+void page1(int *pageno){clearScreen();printf("Page %d\n",*pageno);}
+void page2(int *pageno){clearScreen(); printf("Page %d\n",*pageno);}
+void page3(int *pageno){clearScreen(); printf("Page %d\n",*pageno);}
 
 void tutorialmenu()
 {
     int pageno;
-    void (*pagearray[4]) () ={page1,page2,page3};    
-    printf("Welcome to the tutorial\n Let's start.\n Use arrow keys to change pages");
-    scanf("%d",&pageno);
-    if(pageno<2)
+    void (*pagearray[3]) () ={page1,page2,page3};    
+    printf("Welcome to the tutorial\n Let's start.\n Use enter or backspace to change pages");
+    pageno=1;
+    int key=0;
+    while(key!=27)
     {
-    pagearray[pageno](&pageno);
+        pagearray[pageno-1](&pageno);
+        key=getch();
+        if (key == 13) 
+        { 
+            toggle(&pageno,1,3,1);
+        }
+        if (key==8)
+        {
+            toggle(&pageno,1,3,0);
+        }
+        if(key==27)
+        {    exit(0);}
     }
+
+
 }
 
 //function to format the display layout of the settings menu (without input logic)
@@ -117,8 +143,8 @@ void SettingsMenu(struct GameSettings *settings){
             } else if (key == 80 ) { // Down arrow
                 selectedOption++;
             }
-            else if (key == 77 || key==75) { // Right arrow
-                toggle(info[selectedOption-1]);
+            else if (key == 77 || key==75) { // Right arrow or left arrow
+                toggle(info[selectedOption-1],0,1,1);
             }
         }
     }
