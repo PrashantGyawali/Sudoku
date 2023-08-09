@@ -84,10 +84,8 @@ bool completevalid(int a[9][9])
 SavedGames* read_games(int* numgames) {
     FILE* fs = fopen("pastgames.txt", "rb");
     if (fs == NULL) {
-        perror("Error opening file");
-        return NULL;
+    return NULL;
     }
-
     // Get the total number of records (size of file / size of a book structure)
     fseek(fs, 0, SEEK_END);
     long fileSize = ftell(fs);
@@ -179,6 +177,9 @@ void main()
                     printf(" %d \t %d \t\t %d \n",games[i].id ,games[i].lastmodified,games[i].settings.ai);
                     }
             }
+    }
+    else{
+        printf("No Saved games");
     }
 
 
