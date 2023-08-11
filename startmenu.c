@@ -2,6 +2,7 @@
 #include <conio.h>
 #include <stdbool.h>
 #include<stdlib.h>
+#include "keys.c"
 #include "boardfunctions.h"
 #define MENU_SIZE 5
 
@@ -138,9 +139,9 @@ void SettingsMenu(struct GameSettings *settings){
         if (key == 0 || key == 224) 
         {
             key = getch(); // Extended key code
-            if (key == 72 ) { // Up arrow
+            if (key == UPARROW ) { // Up arrow
                 selectedOption--;
-            } else if (key == 80 ) { // Down arrow
+            } else if (key == DOWNARROW ) { // Down arrow
                 selectedOption++;
             }
             else if (key == 77 || key==75) { // Right arrow or left arrow

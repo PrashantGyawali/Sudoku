@@ -3,6 +3,7 @@
 #include<stdbool.h>
 #include<conio.h>
 #include <time.h>
+#include "types.h"
 #define N 9
 
 //displays each cell with proper coloring
@@ -34,7 +35,7 @@ void clearScreen() {
 }
 
 //displays the entire board
-void display_board(int elements[9][9], int selected_cell_row, int selected_cell_column, int errorblock[9][9],int initial_grid[9][9]) 
+void display_board(Board elements, int selected_cell_row, int selected_cell_column, Board errorblock,Board initial_grid) 
 {
     clearScreen();
     int i, j;
@@ -78,7 +79,7 @@ void display_board(int elements[9][9], int selected_cell_row, int selected_cell_
 }
 
 bool is_valid_board(int errorgrid[9][9]){
-    for (int i=0;i<9;i++)
+    for (int i=0;i<9; i++)
     {
         for(int j=0;j<9;j++)
         {
@@ -92,7 +93,7 @@ bool is_valid_board(int errorgrid[9][9]){
 }
 
 //checks the board with the initial board and finds duplicate elements and updates the error board
-void check_board_show_Errors(int a[9][9],int errorblocks[9][9],int initial_grid[9][9])
+void check_board_show_Errors(Board a,Board errorblocks,Board initial_grid)
 {   int i,j;
 
     //clear the previous error tracker array 
@@ -216,7 +217,7 @@ for(i=0;i<9;i++)
     }
 }
 
-bool completevalid(int a[9][9])
+bool completevalid(Board a)
 {
     int row_sum=0;
     int row_product=1;
@@ -261,7 +262,7 @@ bool completevalid(int a[9][9])
 }
 
 //copies grid from source to destination
-void copy_grid(int src[9][9],int destination[9][9])
+void copy_grid(Board src,Board destination)
 {
     for(int i=0;i<9;i++)
     {
@@ -273,7 +274,7 @@ void copy_grid(int src[9][9],int destination[9][9])
 }
 
 //finds the first empty cell in grid 
-bool find_empty_cell(int grid[N][N], int *row, int *col) {
+bool find_empty_cell(Board grid, int *row, int *col) {
     for (*row = 0; *row < N; (*row)++) {
         for (*col = 0; *col < N; (*col)++) {
             if (grid[*row][*col] == 0) {
@@ -285,7 +286,7 @@ bool find_empty_cell(int grid[N][N], int *row, int *col) {
 }
 
 //checks if move is safe or not
-bool is_safe(int grid[N][N], int row, int col, int num) {
+bool is_safe(Board grid, int row, int col, int num) {
 
     // Check if 'num' is not present in the current row, column, and box
 
@@ -308,32 +309,35 @@ bool is_safe(int grid[N][N], int row, int col, int num) {
 }
 
 // Solves the sudoku board, has choice for speed, and rendering or not as well as selected row and column(used for rendering)
-bool solve_sudoku(int grid[N][N],int selected_cell_column,int selected_cell_row,int errorgrid[N][N],int initial_grid[N][N],bool slow,bool display) {
+bool solve_sudoku(Board grid,int selected_cell_column,int selected_cell_row,Board errorgrid,Board initial_grid,bool slow,bool display) {
     int row, col;
     // Find an empty cell (0) in the grid
     if (!find_empty_cell(grid, &row, &col)) {
         return true; // No empty cells, Sudoku is solved
     }
 
-    if(slow)
-    {
-        if(row<3)
-        sleep(10);
-        else{
-            sleep(200/(9-row));
-        }
-    }
+
 
     // Try placing digits from 1 to 9 in the empty cell
     for (int num = 1; num <= 9; num++) {
-        if(display)
-        {
-            display_board(grid,selected_cell_column,selected_cell_row,errorgrid,initial_grid);
-        }
-
         if (is_safe(grid, row, col, num)) {
             // If the digit is safe, place it
             grid[row][col] = num;
+
+            if(display)
+            {
+                display_board(grid,selected_cell_column,selected_cell_row,errorgrid,initial_grid);
+            }
+
+            if(slow)
+            {
+                if(row<3)
+                sleep(10);
+                else{
+                    sleep(200/(9-row));
+                }
+            }
+
             // Recursively solve the remaining grid
             if (solve_sudoku(grid,selected_cell_column,selected_cell_row,errorgrid,initial_grid,slow,display)) {
                 return true; // Found a solution
@@ -349,9 +353,9 @@ bool solve_sudoku(int grid[N][N],int selected_cell_column,int selected_cell_row,
 }
 
 //generates a new board
-void generateboard(int emptyboard[9][9])
+void generateboard(Board emptyboard)
 {   
-    int errorgrid[9][9]= {
+    Board errorgrid = {
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -399,3 +403,7 @@ void generateboard(int emptyboard[9][9])
         }
     }
 }
+
+
+
+

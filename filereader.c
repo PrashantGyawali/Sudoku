@@ -166,23 +166,28 @@ void main()
     };
         // printf("%d",completevalid(test_grid)); //for testing
         if (games != NULL) {
-            printf("+ID----Last Modified----Ai--+\n");
-            for (int i = 0; i < numgames; i++)
+            int key=1;
+            while(key!=0)
             {
-                    if(i==selectedgame)
-                    {
-                    printf("\033[47;30m %d \t %d \t\t %d \033[0m\n",games[i].id ,games[i].lastmodified,games[i].settings.ai);
-                    }
-                    else{
-                    printf(" %d \t %d \t\t %d \n",games[i].id ,games[i].lastmodified,games[i].settings.ai);
-                    }
+                printf("+ID----Last Modified----Ai--+\n");
+                for (int i = 0; i < numgames; i++)
+                {
+                        if(i==selectedgame)
+                        {
+                        printf("\033[47;30m %d \t %d \t\t %d \033[0m\n",games[i].id ,games[i].lastmodified,games[i].settings.ai);
+                        }
+                        else{
+                        printf(" %d \t %d \t\t %d \n",games[i].id ,games[i].lastmodified,games[i].settings.ai);
+                        }
+                }
+                printf("\nPress backspace to go back to main menu");
             }
+            key=getch();
+            
     }
     else{
-        printf("No Saved games");
+        printf("No Saved games\nPress backspace to go back to main menu...");
     }
-
-
     free(games); // Free the dynamically allocated memory for the array of books
 }
 

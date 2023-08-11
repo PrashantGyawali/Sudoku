@@ -3,6 +3,8 @@
 #include <conio.h>
 #include<stdlib.h>
 #include "boardfunctions.h"
+#include "keys.c"
+#include "types.h"
 
 #define N 9
 
@@ -25,7 +27,7 @@ int main() {
     getch();
     
     //initial grid
-    int initial_grid[9][9]={
+    Board initial_grid ={
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -40,8 +42,7 @@ int main() {
     int playing_grid[N][N];
 
     //used for coloring the duplicate numbers. if duplicate the 0 changes to 1
-    int errorgrid[N][N]= 
-        {
+    Board errorgrid= {
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -52,11 +53,15 @@ int main() {
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0}
         };
+
         clearScreen();
         printf("\nGenerating New Board...");
-        sleep(600);
         generateboard(initial_grid);
         copy_grid(initial_grid,playing_grid);
+        clearScreen();
+        printf("\nGenerated New Board...");
+        printf("\nPress b to enter the game");
+
 
     int key;
     do {
@@ -68,7 +73,7 @@ int main() {
 
         //manual entry mode
         if(mode==2)
-        {     
+        {   
             check_board_show_Errors(playing_grid,errorgrid,initial_grid);
             display_board(playing_grid, selected_cell_row, selected_cell_column,errorgrid,initial_grid);
         }
@@ -76,7 +81,6 @@ int main() {
         //algorithmic solving mode
         if(mode==1)
         {
-
             if(is_valid_board(errorgrid))
             {
                 if (solve_sudoku(playing_grid,selected_cell_row,selected_cell_column,errorgrid,initial_grid,slow,true)) {
@@ -94,7 +98,6 @@ int main() {
             }
             mode=2;
         }
-        //
 
         
         fflush(stdin);
@@ -110,13 +113,13 @@ int main() {
         if (key == 0 || key == 224) {
             key = getch(); // Extended key code
 
-            if (key == 72) { // Up arrow
+            if (key == UPARROW) { // Up arrow
                 selected_cell_row--;
-            } else if (key == 80) { // Down arrow
+            } else if (key == DOWNARROW) { // Down arrow
                 selected_cell_row++;
-            } else if (key == 77) { // Right arrow
+            } else if (key == RIGHTARROW) { // Right arrow
                 selected_cell_column++;
-            } else if (key == 75) { // Left arrow
+            } else if (key == LEFTARROW) { // Left arrow
                 selected_cell_column--;
             }
         }
@@ -130,9 +133,10 @@ int main() {
             mode=2;
         }
 
-    } while (key != 27);
-
-
+    } while (key != ESCKEY);
 
     return 0;
 }
+
+
+
