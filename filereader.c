@@ -2,6 +2,12 @@
 #include<conio.h>
 #include<stdbool.h>
 #include<stdlib.h>
+#include "keys.c"
+
+//clears the screen
+void clearScreen() {
+    system("cls");
+}
 
 typedef struct SavedGamesdata{
     int lastmodified;
@@ -167,8 +173,8 @@ void main()
         // printf("%d",completevalid(test_grid)); //for testing
         if (games != NULL) {
             int key=1;
-            while(key!=0)
-            {
+            while(key!=ESCKEY)
+            {   clearScreen();
                 printf("+ID----Last Modified----Ai--+\n");
                 for (int i = 0; i < numgames; i++)
                 {
@@ -181,8 +187,17 @@ void main()
                         }
                 }
                 printf("\nPress backspace to go back to main menu");
-            }
             key=getch();
+            if(key==UPARROW && selectedgame>0)
+            {
+                selectedgame-=1;
+            }
+            if(key==DOWNARROW && selectedgame<numgames-1)
+            {
+                selectedgame+=1;
+            }
+
+            }
             
     }
     else{
