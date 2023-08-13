@@ -59,8 +59,8 @@ int main() {
         generateboard(initial_grid);
         copy_grid(initial_grid,playing_grid);
         clearScreen();
-        printf("\nGenerated New Board...");
-        printf("\nPress b to enter the game");
+        printf("\n Generated New Board...");
+        printf("\n>Press b to enter the game");
 
 
     int key;

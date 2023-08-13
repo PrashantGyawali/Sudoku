@@ -3,13 +3,23 @@
 #include<stdbool.h>
 #include<stdlib.h>
 #include "keys.c"
+#include "types.h"
 
 //clears the screen
 void clearScreen() {
     system("cls");
 }
-
-typedef struct SavedGamesdata{
+void copy_grid(Board src,Board destination)
+{
+    for(int i=0;i<9;i++)
+    {
+        for(int j=0;j<9;j++)
+        {
+            destination[i][j]=src[i][j];
+        }
+    }
+}
+typedef struct Gamesdata{
     int lastmodified;
     int id;
     struct Settings{
@@ -22,7 +32,13 @@ typedef struct SavedGamesdata{
     int initialgrid[9][9];
     int grid[9][9];
     int errorgrid[9][9];
-}SavedGames;
+}Game;
+
+// Function to copy game settings from source to destination 
+void CopyGame(Game *src, Game *destination) {
+    *destination = *src;  // Copy the entire struct, including arrays
+}
+
 
 int* emptyboardinit(){
     int a[9][9]={
@@ -87,7 +103,7 @@ bool completevalid(int a[9][9])
     return true;
 }
 
-SavedGames* read_games(int* numgames) {
+Game* read_games(int* numgames) {
     FILE* fs = fopen("pastgames.txt", "rb");
     if (fs == NULL) {
     return NULL;
@@ -95,10 +111,10 @@ SavedGames* read_games(int* numgames) {
     // Get the total number of records (size of file / size of a book structure)
     fseek(fs, 0, SEEK_END);
     long fileSize = ftell(fs);
-    *numgames = fileSize / sizeof(SavedGames);
+    *numgames = fileSize / sizeof(Game);
 
     // Allocate memory for the array of games
-    SavedGames* games = (SavedGames*)malloc((*numgames) * sizeof(SavedGames));
+    Game* games = (Game*)malloc((*numgames) * sizeof(Game));
     if (games == NULL) {
         perror("Memory allocation error");
         fclose(fs);
@@ -107,23 +123,18 @@ SavedGames* read_games(int* numgames) {
 
     // Read the data from the file into the array of structures
     rewind(fs); // Move file pointer back to the beginning
-    fread(games, sizeof(SavedGames), *numgames, fs);
+    fread(games, sizeof(Game), *numgames, fs);
 
     fclose(fs);
     return games;
 }
 
 
-void readdata(FILE*srcfile,struct SavedGames* games)
-{
 
-}
-
-
-void main()
+void SavedGamesMenu(Game *Self)
 {
     int selectedgame=0;
-
+    Game Game1;
     int grid[9][9]= 
         {
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -136,26 +147,25 @@ void main()
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0}
         };
+        
         FILE *pastgames;
         pastgames=fopen("pastgames.txt","rb");
         int numgames;
 
-        SavedGames* games = read_games(&numgames);
+        Game* games = read_games(&numgames);
         FILE *fs;
         fs=fopen("pastgames.txt","a+");
         fseek(fs,0,SEEK_END);
-        SavedGames bk={
-            200,1,{0,0,0,0},{
-        {5, 3, 4, 6, 7, 8, 9, 1, 2},
-        {6, 7, 2, 1, 9, 5, 3, 4, 8},
-        {1, 9, 8, 3, 4, 2, 5, 6, 7},
-        {8, 5, 9, 7, 6, 1, 4, 2, 3},
-        {4, 2, 6, 8, 5, 3, 7, 9, 1},
-        {7, 1, 3, 9, 2, 4, 8, 5, 6},
-        {9, 6, 1, 5, 3, 7, 2, 8, 4},
-        {2, 8, 7, 4, 1, 9, 6, 3, 5},
-        {3, 4, 5, 2, 8, 6, 1, 7, 9}
-        },emptyboardinit(),emptyboardinit()};
+
+        //empty Game init
+        Game bk;
+        bk.lastmodified=200;
+        bk.id=10;
+        bk.settings.ai=bk.settings.gamemode=bk.settings.hint=bk.settings.slow=0;
+        copy_grid(emptyboardinit,bk.errorgrid);
+        copy_grid(emptyboardinit,bk.grid);
+
+
         fwrite(&bk,sizeof(bk),1,fs);
         fclose(fs);
         
@@ -195,6 +205,19 @@ void main()
             if(key==DOWNARROW && selectedgame<numgames-1)
             {
                 selectedgame+=1;
+            }
+            if(key==ENTERKEY)
+            {
+            CopyGame(&games[selectedgame],&Game1);
+            printf("\n copied Game data");
+            //and send this Game to start menu
+            *Self=bk;
+            break;
+            }
+            if(key==BACKSPACE)
+            {
+                free(games);
+                break;
             }
 
             }

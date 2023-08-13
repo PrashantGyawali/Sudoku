@@ -173,7 +173,7 @@ for(i=0;i<9;i++)
 //check all the squares
     int sqdups[9]={0,0,0,0,0,0,0,0,0};
 
-    int k=0,row=0,col=0;
+    int row=0,col=0;
 
     for(row=0;row<9;row+=3)
     {   

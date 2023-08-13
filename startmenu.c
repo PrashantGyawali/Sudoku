@@ -4,24 +4,21 @@
 #include<stdlib.h>
 #include "keys.c"
 #include "boardfunctions.h"
-#define MENU_SIZE 5
+#include "filereader.c"
+#define MENU_SIZE 6
 
-struct GameSettings{
+struct GlobalGameSettings{
     int ai;
     int hints;
     int gamemode;
     int slow;
 }settings;
 
-void clearScreen() {
-    // Clear the console screen
-    system("cls");
-}
 
 void displayMenu(int selectedOption) {
     clearScreen();
 
-    char menu_options[MENU_SIZE][50] = {"New Game", "Load Saved Games", "How to Play","Settings","Quit"};
+    char menu_options[MENU_SIZE][50] = {"New Game","Loaded game", "Saved Games", "How to Play","Settings","Quit"};
     printf("SUDOKU\n\n");
     // Display the menu options
     for (int i = 1; i <= MENU_SIZE; i++) {
@@ -90,7 +87,7 @@ void tutorialmenu()
 }
 
 //function to format the display layout of the settings menu (without input logic)
-void displaySettings(int selectedoption,struct GameSettings *settings){
+void displaySettings(int selectedoption,struct GlobalGameSettings *settings){
     clearScreen();
 
     char menu_options[4][50][50] = {{"Ai Not Allowed","AI Allowed"}, {"Hints Allowed","Hints Not Allowed"}, {"Normal","Childmode"},{"Slow(AI)","Fast(AI)"}};
@@ -123,7 +120,7 @@ void displaySettings(int selectedoption,struct GameSettings *settings){
 }
 
 //Enter the settings menu (contains inputs and logics)
-void SettingsMenu(struct GameSettings *settings){
+void SettingsMenu(struct GlobalGameSettings *settings){
     int selectedOption=1;
     
 
@@ -157,42 +154,60 @@ main(); //TODO: Need to change this main function to mainmenu and then make simi
 
 
 int main() {
+    Game LoadedGame;
     int selectedOption = 1;
     char key;
     settings.ai=0,settings.gamemode=1,settings.hints=0,settings.slow=0;
 
-    // SettingsMenu(&settings);
+    while(1)
+    {
     do {
-        selectedOption=selectedOption>5?1:selectedOption;
-        selectedOption=selectedOption<1?5:selectedOption;
+        selectedOption=selectedOption>6?1:selectedOption;
+        selectedOption=selectedOption<1?6:selectedOption;
         displayMenu(selectedOption);
 
         // Wait for arrow key input
         key = getch();
 
-
-        
-            if (key == 72 ) { // Up arrow
+            if (key == UPARROW ) { // Up arrow
                 selectedOption--;
-            } else if (key == 80 ) { // Down arrow
+            } else if (key == DOWNARROW ) { // Down arrow
                 selectedOption++;
             }
+            else if(key==ESCKEY)
+            {
+                exit(0);
+            }
 
-
-    } while (key != 13); // Repeat until Enter key is pressed
-
-
-    switch(selectedOption){
+if(key==ENTERKEY)
+{
+switch(selectedOption){
+        //will create a new game
         case 1:
         break;
+        //will create board from a savedgame data
         case 2:
+        
         break;
+        //will get us into saved games menu
         case 3:
-        tutorialmenu();
+        SavedGamesMenu(&LoadedGame);
         break;
         case 4:
+        tutorialmenu();
+        break;
+        case 5:
         SettingsMenu(&settings);
         break;
     }
+}
+
+
+
+    } while (key != ESCKEY); // Repeat until Enter key is pressed
+
+
+    // SettingsMenu(&settings);
 return 0;
+}
 }
