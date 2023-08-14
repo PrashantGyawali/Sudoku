@@ -52,7 +52,6 @@ if((*a)==min)
 }
 }
 
-
 // TODO: make it page by page with players being allowed to go back to previous page or forward to new page. 
 // TODO: create funcitons for each page  and then create an array of pointers to those functions.
 // TODO: create variable "x" and increment or decrement x. the x will correspond to the page no or index of the array.
@@ -155,6 +154,7 @@ main(); //TODO: Need to change this main function to mainmenu and then make simi
 
 int main() {
     Game LoadedGame;
+    empty_Game_Init(&LoadedGame);
     int selectedOption = 1;
     char key;
     settings.ai=0,settings.gamemode=1,settings.hints=0,settings.slow=0;
@@ -165,7 +165,7 @@ int main() {
         selectedOption=selectedOption>6?1:selectedOption;
         selectedOption=selectedOption<1?6:selectedOption;
         displayMenu(selectedOption);
-
+        printf("\nLoaded game id %d",LoadedGame.id);
         // Wait for arrow key input
         key = getch();
 
@@ -198,6 +198,9 @@ switch(selectedOption){
         break;
         case 5:
         SettingsMenu(&settings);
+        break;
+        case 6:
+        exit(0);
         break;
     }
 }

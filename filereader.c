@@ -2,6 +2,7 @@
 #include<conio.h>
 #include<stdbool.h>
 #include<stdlib.h>
+#include <time.h>
 #include "keys.c"
 #include "types.h"
 
@@ -9,13 +10,29 @@
 void clearScreen() {
     system("cls");
 }
-void copy_grid(Board src,Board destination)
+
+int getDateInteger() {
+    time_t current_time;
+    struct tm *timeinfo;
+
+    // Get the current time
+    current_time = time(NULL);
+    timeinfo = localtime(&current_time);
+
+    // Calculate the date integer in the format YYYYMMDD
+    int date_integer = (timeinfo->tm_year + 1900) * 10000 + (timeinfo->tm_mon + 1) * 100 + timeinfo->tm_mday;
+
+    return date_integer;
+}
+
+
+void copy_grid2(Board* src,Board* destination)
 {
     for(int i=0;i<9;i++)
     {
         for(int j=0;j<9;j++)
         {
-            destination[i][j]=src[i][j];
+            *destination[i][j]=*src[i][j];
         }
     }
 }
@@ -29,78 +46,33 @@ typedef struct Gamesdata{
     int slow;
     }settings;
 
-    int initialgrid[9][9];
-    int grid[9][9];
-    int errorgrid[9][9];
+    Board initialgrid;
+    Board grid;
+    Board errorgrid;
 }Game;
 
-// Function to copy game settings from source to destination 
-void CopyGame(Game *src, Game *destination) {
-    *destination = *src;  // Copy the entire struct, including arrays
-}
 
-
-int* emptyboardinit(){
-    int a[9][9]={
-        {0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0}
-        };
-    return a;
-}
-
-bool completevalid(int a[9][9])
-{
-    //check 
+void emptyboardinit(Board a){
     for(int i=0;i<9;i++)
+    {
+        for(int j=0;j<9;j++)
         {
-            int row_sum=0;
-            int row_product=1;
-            int col_sum=0;
-            int col_product=1;
-
-            for(int j=0;j<9;j++)
-            {
-            row_sum+=a[i][j];
-            row_product*=a[i][j];
-            col_sum+=a[j][i];
-            col_product*=a[j][i];
-            }
-
-            if(row_sum!=45 ||col_sum!=45||row_product!=362880 ||col_product!=362880)
-            {
-            printf("row or column");
-            return false;
-            }
+            a[i][j]=0;
         }
-
-    for(int row=0;row<9;row+=3)
-    {   
-        for(int col=0;col<9;col+=3)
-        { int sum=0,product=1;
-            for(int i=row;i<row+3;i++)
-            {
-                    for(int j=col;j<col+3;j++)
-                    {
-                        sum+=a[i][j];
-                        product*=a[i][j];
-                    }
-            }
-            if(sum!=45 || product!=362880)
-            {
-                printf("square");
-                return false;
-            }
-        } 
     }
+}
 
-    return true;
+void empty_Game_Init(Game *gm){
+        srand(time(NULL));
+        gm->lastmodified=getDateInteger();
+        gm->id=rand()%1000;
+        gm->settings.ai=1;
+        gm->settings.gamemode=0;
+        gm->settings.hint=1;
+        gm->settings.slow=0;
+        emptyboardinit(gm->initialgrid);
+        emptyboardinit(gm->errorgrid);
+        emptyboardinit(gm->grid);
 }
 
 Game* read_games(int* numgames) {
@@ -134,7 +106,7 @@ Game* read_games(int* numgames) {
 void SavedGamesMenu(Game *Self)
 {
     int selectedgame=0;
-    Game Game1;
+    // Game Game1;
     int grid[9][9]= 
         {
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -159,12 +131,10 @@ void SavedGamesMenu(Game *Self)
 
         //empty Game init
         Game bk;
-        bk.lastmodified=200;
-        bk.id=10;
-        bk.settings.ai=bk.settings.gamemode=bk.settings.hint=bk.settings.slow=0;
-        copy_grid(emptyboardinit,bk.errorgrid);
-        copy_grid(emptyboardinit,bk.grid);
+        empty_Game_Init(&bk);
 
+        printf("\nAdded new game info %d %d",bk.id,bk.lastmodified);
+        sleep(2000);
 
         fwrite(&bk,sizeof(bk),1,fs);
         fclose(fs);
@@ -180,20 +150,19 @@ void SavedGamesMenu(Game *Self)
         {2, 8, 7, 4, 1, 9, 6, 3, 5},
         {3, 4, 5, 2, 8, 6, 1, 7, 9}
     };
-        // printf("%d",completevalid(test_grid)); //for testing
         if (games != NULL) {
             int key=1;
-            while(key!=ESCKEY)
+            while(key!=BACKSPACE)
             {   clearScreen();
                 printf("+ID----Last Modified----Ai--+\n");
                 for (int i = 0; i < numgames; i++)
                 {
                         if(i==selectedgame)
                         {
-                        printf("\033[47;30m %d \t %d \t\t %d \033[0m\n",games[i].id ,games[i].lastmodified,games[i].settings.ai);
+                        printf("\033[47;30m %-5d \t %9d \t %d \033[0m\n",games[i].id ,games[i].lastmodified,games[i].settings.ai);
                         }
                         else{
-                        printf(" %d \t %d \t\t %d \n",games[i].id ,games[i].lastmodified,games[i].settings.ai);
+                        printf(" %-5d \t %9d \t %d   \n",games[i].id ,games[i].lastmodified,games[i].settings.ai);
                         }
                 }
                 printf("\nPress backspace to go back to main menu");
@@ -208,23 +177,24 @@ void SavedGamesMenu(Game *Self)
             }
             if(key==ENTERKEY)
             {
-            CopyGame(&games[selectedgame],&Game1);
-            printf("\n copied Game data");
-            //and send this Game to start menu
+            // CopyGame(&games[selectedgame],&Game1);
+            printf("\nLoading Game data...");
+            sleep(500);
+            bk=games[selectedgame];
+            //and update this Game to start menu
             *Self=bk;
             break;
             }
-            if(key==BACKSPACE)
+            if(key==ESCKEY)
             {
                 free(games);
-                break;
+                exit(0);
             }
-
-            }
-            
+        }     
     }
     else{
-        printf("No Saved games\nPress backspace to go back to main menu...");
+        printf("\nNo Saved games\nPress any key to go back to main menu...");
+        getch();
     }
     free(games); // Free the dynamically allocated memory for the array of books
 }
