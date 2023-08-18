@@ -7,6 +7,12 @@
 #include "sleep.h"
 #define N 9
 
+
+#ifndef __BOARD_FUNCTIONS__ // Check if Game struct is not defined
+#define __BOARD_FUNCTIONS__ // Define it to prevent redefinition
+
+
+
 //displays each cell with proper coloring
 void display_cell(int value, int isSelected, int errored,int initial) {
 if (isSelected) {
@@ -406,5 +412,5 @@ void generateboard(Board emptyboard)
 }
 
 
-
+#endif // __BOARD_FUNCTIONS__
 

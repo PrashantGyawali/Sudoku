@@ -8,25 +8,27 @@
 
 #define N 9
 
-bool slow=true;
 
-int main() {
+int mainGame(Game current_loaded_game, bool new_game_or_not) {
     //take inputs is ai_allowed, hints_allowed , init_board
     int mode=2;
+    int slow=current_loaded_game.settings.slow;
+    int ai_allowed=current_loaded_game.settings.ai;
+    int hint_allowed=current_loaded_game.settings.hint;
 
 
     int selected_cell_row = 4, selected_cell_column = 4;
-
-    printf("Sudoku game\n How to play?:\n");
-    printf("Press 'a' to use ai solver in game\n");
-    printf("Press 'b' to enter manually in game\n");
-    printf("Navigate using arrow keys\n");
-    printf("Enter 0 to clear the number\n");
-    printf("Enter Esc to quit\n");
-    printf("Press any key to continue");
+    clearScreen();
+    printf("\tSudoku game\n\nHow to play?:\n");
+    printf("'a' => ai solver in game\n");
+    printf("'b' => manual mode\n");
+    printf("'Arrow keys' => Navigation\n");
+    printf("'0' => Clear the number\n");
+    printf("'Esc' => quit\n");
+    printf("Currently No way to go back to main menu again. Terminate the program and run again");
+    printf("\nPress Enter to continue...");
     getch();
     
-    //initial grid
     Board initial_grid ={
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -39,10 +41,10 @@ int main() {
         {0, 0, 0, 0, 0, 0, 0, 0, 0}
         };
 
-    int playing_grid[N][N];
+    Board playing_grid;
 
     //used for coloring the duplicate numbers. if duplicate the 0 changes to 1
-    Board errorgrid= {
+    Board error_grid= {
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -54,6 +56,8 @@ int main() {
         {0, 0, 0, 0, 0, 0, 0, 0, 0}
         };
 
+    if(new_game_or_not==true)
+    {
         clearScreen();
         printf("\nGenerating New Board...");
         generateboard(initial_grid);
@@ -61,6 +65,15 @@ int main() {
         clearScreen();
         printf("\n Generated New Board...");
         printf("\n>Press b to enter the game");
+    }
+
+    if(new_game_or_not==false)
+    {
+        copy_grid(current_loaded_game.grid,playing_grid);
+        copy_grid(current_loaded_game.initialgrid,initial_grid);
+        copy_grid(current_loaded_game.errorgrid,error_grid);
+    }
+
 
 
     int key;
@@ -74,26 +87,26 @@ int main() {
         //manual entry mode
         if(mode==2)
         {   
-            check_board_show_Errors(playing_grid,errorgrid,initial_grid);
-            display_board(playing_grid, selected_cell_row, selected_cell_column,errorgrid,initial_grid);
+            if(hint_allowed){check_board_show_Errors(playing_grid,error_grid,initial_grid);}
+            display_board(playing_grid, selected_cell_row, selected_cell_column,error_grid,initial_grid);
         }
 
         //algorithmic solving mode
         if(mode==1)
         {
-            if(is_valid_board(errorgrid))
+            if(is_valid_board(error_grid))
             {
-                if (solve_sudoku(playing_grid,selected_cell_row,selected_cell_column,errorgrid,initial_grid,slow,true)) {
-                    display_board(playing_grid,selected_cell_row,selected_cell_column,errorgrid,initial_grid);
+                if (solve_sudoku(playing_grid,selected_cell_row,selected_cell_column,error_grid,initial_grid,slow,true)) {
+                    display_board(playing_grid,selected_cell_row,selected_cell_column,error_grid,initial_grid);
                     printf("This is the required Sudoku solution\n");
                 }
                 else {
-                    display_board(playing_grid,selected_cell_row,selected_cell_column,errorgrid,initial_grid);
+                    display_board(playing_grid,selected_cell_row,selected_cell_column,error_grid,initial_grid);
                     printf("No solution exists.\n");
                 }
             }
             else{
-                display_board(playing_grid,selected_cell_row,selected_cell_column,errorgrid,initial_grid);
+                display_board(playing_grid,selected_cell_row,selected_cell_column,error_grid,initial_grid);
                 printf("Not valid board.\n");
             }
             mode=2;
@@ -124,7 +137,8 @@ int main() {
             }
         }
 
-        if(key==97)
+        //ai and manual
+        if(key==97 && ai_allowed==1) 
         {
             mode=1;
         }
@@ -134,7 +148,6 @@ int main() {
         }
 
     } while (key != ESCKEY);
-
     return 0;
 }
 

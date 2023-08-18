@@ -5,6 +5,8 @@
 #define ESCKEY 27
 #define BACKSPACE 8
 #define ENTERKEY 13
+#define SPACE 32
+
 
 
 

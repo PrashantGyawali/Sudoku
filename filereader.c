@@ -7,9 +7,9 @@
 #include "./headers/types.h"
 
 //clears the screen
-void clearScreen() {
-    system("cls");
-}
+
+#ifndef __FILEREADER__
+#define __FILEREADER__
 
 int getDateInteger() {
     time_t current_time;
@@ -36,21 +36,6 @@ void copy_grid2(Board* src,Board* destination)
         }
     }
 }
-typedef struct Gamesdata{
-    int lastmodified;
-    int id;
-    struct Settings{
-    int ai;
-    int hint;
-    int gamemode;
-    int slow;
-    }settings;
-
-    Board initialgrid;
-    Board grid;
-    Board errorgrid;
-}Game;
-
 
 void emptyboardinit(Board a){
     for(int i=0;i<9;i++)
@@ -102,9 +87,51 @@ Game* read_games(int* numgames) {
 }
 
 
+void write_game(Game gamedata) {
+    FILE* fs = fopen("pastgames.txt", "wb");
+    if (fs == NULL) {
+        printf("pastgames.txt = NULL");
+    }
+    // Get the total number of records (size of file / size of a book structure)
+    fseek(fs, 0, SEEK_END);
+    long fileSize = ftell(fs);
+    int numgames = fileSize / sizeof(Game);
+
+    // Allocate memory for the array of games
+    Game* games = (Game*)malloc((numgames) * sizeof(Game));
+    if (games == NULL) {
+        perror("Memory allocation error");
+        fclose(fs);
+    }
+
+    // Read the data from the file into the array of structures
+    rewind(fs); // Move file pointer back to the beginning
+    fclose(fs);
+
+    //Empty the file
+    fclose(fopen("pastgames.txt", "w"));
+
+
+    //update the file
+    fs = fopen("pastgames.txt", "wb");
+    if (fs == NULL) {
+    printf("pastgames.txt = NULL");
+    }
+    fwrite(&gamedata,sizeof(Game),1,fs);
+    for(int i=0;i<numgames;i++)
+    {
+        if(i!=gamedata.id){
+        fwrite(&games[i], sizeof(Game), 1, fs);
+        }
+    }
+    fclose(fs);
+
+}
+
 
 void SavedGamesMenu(Game *Self, int* has_loaded_the_game)
 {
+    clearScreen();
     int selectedgame=0;
     // Game Game1;
     int grid[9][9]= 
@@ -179,7 +206,7 @@ void SavedGamesMenu(Game *Self, int* has_loaded_the_game)
             {
             // CopyGame(&games[selectedgame],&Game1);
             printf("\nLoading Game data...");
-            sleep(500);
+            cross_sleep(500);
             bk=games[selectedgame];
             //and update this Game to start menu
             *Self=bk;
@@ -200,3 +227,4 @@ void SavedGamesMenu(Game *Self, int* has_loaded_the_game)
     free(games); // Free the dynamically allocated memory for the array of books
 }
 
+#endif

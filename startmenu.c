@@ -5,6 +5,8 @@
 #include "keys.c"
 #include "./headers/boardfunctions.h"
 #include "filereader.c"
+#include "maingame.c"
+#include "tutorialpages.c"
 #define MENU_SIZE 6
 
 struct GlobalGameSettings{
@@ -52,12 +54,7 @@ if((*a)==min)
 }
 }
 
-// TODO: make it page by page with players being allowed to go back to previous page or forward to new page. 
-// TODO: create funcitons for each page  and then create an array of pointers to those functions.
-// TODO: create variable "x" and increment or decrement x. the x will correspond to the page no or index of the array.
-void page1(int *pageno){clearScreen();printf("Page %d\n",*pageno);}
-void page2(int *pageno){clearScreen(); printf("Page %d\n",*pageno);}
-void page3(int *pageno){clearScreen(); printf("Page %d\n",*pageno);}
+
 
 void tutorialmenu()
 {
@@ -78,8 +75,14 @@ void tutorialmenu()
         {
             toggle(&pageno,1,3,0);
         }
-        if(key==27)
-        {    exit(0);}
+        if(key==ESCKEY)
+        {    exit(0);
+        }
+
+        if(key==SPACE)
+        {
+            break;
+        }
     }
 
 
@@ -89,7 +92,7 @@ void tutorialmenu()
 void displaySettings(int selectedoption,struct GlobalGameSettings *settings){
     clearScreen();
 
-    char menu_options[4][50][50] = {{"Ai Not Allowed","AI Allowed"}, {"Hints Allowed","Hints Not Allowed"}, {"Normal","Childmode"},{"Slow(AI)","Fast(AI)"}};
+    char menu_options[4][50][50] = {{"Ai Not Allowed","AI Allowed"}, {"Hints Not Allowed","Hints Allowed"}, {"Normal","Childmode"},{"Slow(AI)","Fast(AI)"}};
     int* info[4]={&settings->ai,&settings->hints,&settings->gamemode,&settings->slow};
 
     // Display the menu options
@@ -140,30 +143,36 @@ void SettingsMenu(struct GlobalGameSettings *settings){
             } else if (key == DOWNARROW ) { // Down arrow
                 selectedOption++;
             }
-            else if (key == 77 || key==75) { // Right arrow or left arrow
+            else if (key == LEFTARROW || key==RIGHTARROW) { // Right arrow or left arrow
                 toggle(info[selectedOption-1],0,1,1);
+            }
+            if(key==ESCKEY)
+            {
+                exit(0);
             }
         }
     }
     while (key != 13); // Repeat until Enter key is pressed
-main(); //TODO: Need to change this main function to mainmenu and then make similar changes
 }
 
 
 
-
+int main();
 int main() {
 
     //initialize loadedgame and new game. based on the option selected, one of this will be passes into the game with additional bool
     // param tlling wheteher new game or old game
+
     int has_loaded_the_game=0;
     Game LoadedGame;
     Game NewGame;
     empty_Game_Init(&LoadedGame);
     empty_Game_Init(&NewGame);
+
+
     int selectedOption = 1;
     char key;
-    settings.ai=0,settings.gamemode=1,settings.hints=0,settings.slow=0;
+    settings.ai=1,settings.gamemode=1,settings.hints=1,settings.slow=1;
 
     while(1)
     {
@@ -201,33 +210,55 @@ if(key==ENTERKEY)
 switch(selectedOption){
         //will create a new game
         case 1:
+            mainGame(NewGame,true);
         break;
+
+
         //will create board from a savedgame data
+        //will give loaded game info to the function if has_loaded_game else do nothing
         case 2:
-        
+        if(has_loaded_the_game){
+            //pass to fn
+            mainGame(LoadedGame,false);
+        }
         break;
+
         //will get us into saved games menu
         case 3:
         SavedGamesMenu(&LoadedGame, &has_loaded_the_game);
         break;
+
         case 4:
         tutorialmenu();
         break;
+
+
         case 5:
+
         SettingsMenu(&settings);
+        //update the settings
+        NewGame.settings.ai=settings.ai;
+        NewGame.settings.gamemode=settings.gamemode;
+        NewGame.settings.hint=settings.hints;
+        NewGame.settings.gamemode=settings.gamemode;
+
         break;
+
+
         case 6:
         exit(0);
         break;
     }
 }
 
+fflush(stdin);
 
 
     } while (key != ESCKEY); // Repeat until Enter key is pressed
 
 
     // SettingsMenu(&settings);
-return 0;
+
 }
+return 0;
 }
