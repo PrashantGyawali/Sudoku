@@ -132,6 +132,7 @@ void SettingsMenu(struct GlobalGameSettings *settings){
         selectedOption=selectedOption>4?1:selectedOption;
         selectedOption=selectedOption<1?4:selectedOption;
         displaySettings(selectedOption,settings);
+        printf("%d",settings->hints);
         key = getch();
 
         // Process arrow key input
@@ -180,6 +181,7 @@ int main() {
         selectedOption=selectedOption>6?1:selectedOption;
         selectedOption=selectedOption<1?6:selectedOption;
         displayMenu(selectedOption);
+
         if(selectedOption==1){
         printf("\nNow playing New Game#%d",NewGame.id);
         }

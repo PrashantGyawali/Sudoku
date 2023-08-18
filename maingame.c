@@ -15,8 +15,7 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
     int slow=current_loaded_game.settings.slow;
     int ai_allowed=current_loaded_game.settings.ai;
     int hint_allowed=current_loaded_game.settings.hint;
-
-
+;
     int selected_cell_row = 4, selected_cell_column = 4;
     clearScreen();
     printf("\tSudoku game\n\nHow to play?:\n");
@@ -56,6 +55,8 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
         {0, 0, 0, 0, 0, 0, 0, 0, 0}
         };
 
+    cross_sleep(0);  //! Dont know why hint_allowed changes to 0 when i dont put this
+    
     if(new_game_or_not==true)
     {
         clearScreen();
@@ -74,8 +75,6 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
         copy_grid(current_loaded_game.errorgrid,error_grid);
     }
 
-
-
     int key;
     do {
         //makes the cursor jump from one end to other end
@@ -83,12 +82,12 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
         selected_cell_column = selected_cell_column > (9 - 1) ? 0 : selected_cell_column;
         selected_cell_row = selected_cell_row < 0 ? (9 - 1) : selected_cell_row;
         selected_cell_column = selected_cell_column < 0 ? (9 - 1) : selected_cell_column;
-
         //manual entry mode
         if(mode==2)
         {   
-            if(hint_allowed){check_board_show_Errors(playing_grid,error_grid,initial_grid);}
+            if(hint_allowed==1 ){check_board_show_Errors(playing_grid,error_grid,initial_grid);}
             display_board(playing_grid, selected_cell_row, selected_cell_column,error_grid,initial_grid);
+            // printf("%d",hint_allowed);
         }
 
         //algorithmic solving mode
