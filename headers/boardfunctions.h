@@ -378,7 +378,10 @@ void generateboard(Board emptyboard)
     srand(time(NULL));
     int iterations=0;
     emptyboard[0][0]=rand()%10;
-    emptyboard[3][3]=rand()%10;
+    emptyboard[2][3]=rand()%10;
+    emptyboard[3][7]=rand()%10;
+    emptyboard[0][7]=rand()%10;
+
 
     while(iterations<13)
     {
@@ -386,6 +389,12 @@ void generateboard(Board emptyboard)
         int t=rand()%10;
         int r=rand()%10;
         int c=rand()%10;
+
+        if(iterations<2)
+        {
+            r=0;
+        };
+
         while(!is_safe(emptyboard,r,c,t))
         {
             t=rand()%10;

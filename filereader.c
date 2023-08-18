@@ -54,7 +54,7 @@ void empty_Game_Init(Game *gm){
         gm->settings.ai=1;
         gm->settings.gamemode=0;
         gm->settings.hint=1;
-        gm->settings.slow=0;
+        gm->settings.slow=1;
         emptyboardinit(gm->initialgrid);
         emptyboardinit(gm->errorgrid);
         emptyboardinit(gm->grid);

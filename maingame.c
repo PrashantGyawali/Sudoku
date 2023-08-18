@@ -13,7 +13,6 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
     //take inputs is ai_allowed, hints_allowed , init_board
     int mode=2;
     int slow=current_loaded_game.settings.slow;
-    int ai_allowed=current_loaded_game.settings.ai;
     int selected_cell_row = 4, selected_cell_column = 4;
     clearScreen();
     printf("\tSudoku game\n\nHow to play?:\n");
@@ -53,11 +52,11 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
         {0, 0, 0, 0, 0, 0, 0, 0, 0}
         };
 
-    cross_sleep(0);  //! Dont know why hint_allowed changes to 0 when i dont put this
+    // cross_sleep(0);  //! Dont know why hint_allowed changes to 0 when i dont put this
     if(new_game_or_not==true)
     {
         clearScreen();
-        printf("\nGenerating New Board...");
+        printf("\nGenerating New Board...\n Please restart if it takes too long");
         generateboard(initial_grid);
         copy_grid(initial_grid,playing_grid);
 
@@ -85,7 +84,8 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
         //manual entry mode
         if(mode==2)
         {   
-            if(current_loaded_game.settings.hint==1 ){check_board_show_Errors(playing_grid,error_grid,initial_grid);}
+            if(current_loaded_game.settings.hint==1 )
+            {check_board_show_Errors(playing_grid,error_grid,initial_grid);}
             display_board(playing_grid, selected_cell_row, selected_cell_column,error_grid,initial_grid);
         }
 
@@ -94,7 +94,7 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
         {
             if(is_valid_board(error_grid))
             {
-                if (solve_sudoku(playing_grid,selected_cell_row,selected_cell_column,error_grid,initial_grid,slow,true)) {
+                if (solve_sudoku(playing_grid,selected_cell_row,selected_cell_column,error_grid,initial_grid,slow,slow)) {
                     display_board(playing_grid,selected_cell_row,selected_cell_column,error_grid,initial_grid);
                     printf("This is the required Sudoku solution\n");
                 }
@@ -136,7 +136,7 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
         }
 
         //ai and manual
-        if(key==97 && ai_allowed==1) 
+        if(key==97 && current_loaded_game.settings.ai==1) 
         {
             mode=1;
         }

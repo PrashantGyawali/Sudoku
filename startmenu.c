@@ -92,7 +92,7 @@ void tutorialmenu()
 void displaySettings(int selectedoption,struct GlobalGameSettings *settings){
     clearScreen();
 
-    char menu_options[4][50][50] = {{"Ai Not Allowed","AI Allowed"}, {"Hints Not Allowed","Hints Allowed"}, {"Normal","Childmode"},{"Slow(AI)","Fast(AI)"}};
+    char menu_options[4][50][50] = {{"Ai Not Allowed","AI Allowed"}, {"Hints Not Allowed","Hints Allowed"}, {"Normal","Childmode"},{"Fast(AI)","Slow(AI)"}};
     int* info[4]={&settings->ai,&settings->hints,&settings->gamemode,&settings->slow};
 
     // Display the menu options
@@ -132,7 +132,6 @@ void SettingsMenu(struct GlobalGameSettings *settings){
         selectedOption=selectedOption>4?1:selectedOption;
         selectedOption=selectedOption<1?4:selectedOption;
         displaySettings(selectedOption,settings);
-        printf("%d",settings->hints);
         key = getch();
 
         // Process arrow key input
@@ -181,7 +180,6 @@ int main() {
         selectedOption=selectedOption>6?1:selectedOption;
         selectedOption=selectedOption<1?6:selectedOption;
         displayMenu(selectedOption);
-
         if(selectedOption==1){
         printf("\nNow playing New Game#%d",NewGame.id);
         }
@@ -243,6 +241,7 @@ switch(selectedOption){
         NewGame.settings.gamemode=settings.gamemode;
         NewGame.settings.hint=settings.hints;
         NewGame.settings.gamemode=settings.gamemode;
+        NewGame.settings.slow=settings.slow;
 
         break;
 
