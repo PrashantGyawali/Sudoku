@@ -1,7 +1,7 @@
 # Sudoku
 Terminal sudoku with solver ai 
 ### How to run?
-Run the main.exe or compile it yourself
+Run a.exe or compiler maingame.c  yourself
 
 ### TODO
 - save progress in file
