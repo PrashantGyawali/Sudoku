@@ -2,9 +2,9 @@
 #include <stdbool.h>
 #include <conio.h>
 #include<stdlib.h>
-#include "boardfunctions.h"
+#include "./headers/boardfunctions.h"
 #include "keys.c"
-#include "types.h"
+#include "./headers/types.h"
 
 #define N 9
 

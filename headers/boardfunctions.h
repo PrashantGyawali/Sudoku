@@ -4,6 +4,7 @@
 #include<conio.h>
 #include <time.h>
 #include "types.h"
+#include "sleep.h"
 #define N 9
 
 //displays each cell with proper coloring
@@ -332,9 +333,9 @@ bool solve_sudoku(Board grid,int selected_cell_column,int selected_cell_row,Boar
             if(slow)
             {
                 if(row<3)
-                sleep(10);
+                cross_sleep(10);
                 else{
-                    sleep(200/(9-row));
+                    cross_sleep(200/(9-row));
                 }
             }
 

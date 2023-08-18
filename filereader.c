@@ -4,7 +4,7 @@
 #include<stdlib.h>
 #include <time.h>
 #include "keys.c"
-#include "types.h"
+#include "./headers/types.h"
 
 //clears the screen
 void clearScreen() {
@@ -65,7 +65,7 @@ void emptyboardinit(Board a){
 void empty_Game_Init(Game *gm){
         srand(time(NULL));
         gm->lastmodified=getDateInteger();
-        gm->id=rand()%1000;
+        gm->id=rand()%100000;
         gm->settings.ai=1;
         gm->settings.gamemode=0;
         gm->settings.hint=1;
@@ -103,7 +103,7 @@ Game* read_games(int* numgames) {
 
 
 
-void SavedGamesMenu(Game *Self)
+void SavedGamesMenu(Game *Self, int* has_loaded_the_game)
 {
     int selectedgame=0;
     // Game Game1;
@@ -125,19 +125,19 @@ void SavedGamesMenu(Game *Self)
         int numgames;
 
         Game* games = read_games(&numgames);
-        FILE *fs;
-        fs=fopen("pastgames.txt","a+");
-        fseek(fs,0,SEEK_END);
 
-        //empty Game init
+//Was used to initialize empty games to test
+        // FILE *fs;
+        // fs=fopen("pastgames.txt","a+");
+        // fseek(fs,0,SEEK_END);
+        // //empty Game init
         Game bk;
         empty_Game_Init(&bk);
+        // printf("\nAdded new game info %d %d",bk.id,bk.lastmodified);
+        // sleep(2000);
 
-        printf("\nAdded new game info %d %d",bk.id,bk.lastmodified);
-        sleep(2000);
-
-        fwrite(&bk,sizeof(bk),1,fs);
-        fclose(fs);
+        // fwrite(&bk,sizeof(bk),1,fs);
+        // fclose(fs);
         
         int test_grid[9][9]={
         {5, 3, 4, 6, 7, 8, 9, 1, 2},
@@ -154,15 +154,15 @@ void SavedGamesMenu(Game *Self)
             int key=1;
             while(key!=BACKSPACE)
             {   clearScreen();
-                printf("+ID----Last Modified----Ai--+\n");
+                printf("+ID----Last Modified----Ai------Hints---SlowAI+\n");
                 for (int i = 0; i < numgames; i++)
                 {
                         if(i==selectedgame)
                         {
-                        printf("\033[47;30m %-5d \t %9d \t %d \033[0m\n",games[i].id ,games[i].lastmodified,games[i].settings.ai);
+                        printf("\033[47;30m %-7d \t %9d \t %d \t %d \t %d \033[0m \n",games[i].id, games[i].lastmodified, games[i].settings.ai, games[i].settings.hint, games[i].settings.slow);
                         }
                         else{
-                        printf(" %-5d \t %9d \t %d   \n",games[i].id ,games[i].lastmodified,games[i].settings.ai);
+                        printf(" %-7d \t %9d \t %d  \t %d \t %d\n",games[i].id ,games[i].lastmodified,games[i].settings.ai,games[i].settings.hint,games[i].settings.slow);
                         }
                 }
                 printf("\nPress backspace to go back to main menu");
@@ -183,6 +183,7 @@ void SavedGamesMenu(Game *Self)
             bk=games[selectedgame];
             //and update this Game to start menu
             *Self=bk;
+            *has_loaded_the_game=1;
             break;
             }
             if(key==ESCKEY)

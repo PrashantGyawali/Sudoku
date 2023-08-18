@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include<stdlib.h>
 #include "keys.c"
-#include "boardfunctions.h"
+#include "./headers/boardfunctions.h"
 #include "filereader.c"
 #define MENU_SIZE 6
 
@@ -153,8 +153,14 @@ main(); //TODO: Need to change this main function to mainmenu and then make simi
 
 
 int main() {
+
+    //initialize loadedgame and new game. based on the option selected, one of this will be passes into the game with additional bool
+    // param tlling wheteher new game or old game
+    int has_loaded_the_game=0;
     Game LoadedGame;
+    Game NewGame;
     empty_Game_Init(&LoadedGame);
+    empty_Game_Init(&NewGame);
     int selectedOption = 1;
     char key;
     settings.ai=0,settings.gamemode=1,settings.hints=0,settings.slow=0;
@@ -165,7 +171,18 @@ int main() {
         selectedOption=selectedOption>6?1:selectedOption;
         selectedOption=selectedOption<1?6:selectedOption;
         displayMenu(selectedOption);
-        printf("\nLoaded game id %d",LoadedGame.id);
+        if(selectedOption==1){
+        printf("\nNow playing New Game#%d",NewGame.id);
+        }
+        if(selectedOption==2){
+            if( has_loaded_the_game)
+            {
+                printf("\nNow playing Loaded Game#%d",LoadedGame.id);
+            }
+            else{
+                printf("\nNo games loaded");
+            }    
+        }
         // Wait for arrow key input
         key = getch();
 
@@ -191,7 +208,7 @@ switch(selectedOption){
         break;
         //will get us into saved games menu
         case 3:
-        SavedGamesMenu(&LoadedGame);
+        SavedGamesMenu(&LoadedGame, &has_loaded_the_game);
         break;
         case 4:
         tutorialmenu();
