@@ -14,8 +14,6 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
     int mode=2;
     int slow=current_loaded_game.settings.slow;
     int ai_allowed=current_loaded_game.settings.ai;
-    int hint_allowed=current_loaded_game.settings.hint;
-;
     int selected_cell_row = 4, selected_cell_column = 4;
     clearScreen();
     printf("\tSudoku game\n\nHow to play?:\n");
@@ -56,17 +54,19 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
         };
 
     cross_sleep(0);  //! Dont know why hint_allowed changes to 0 when i dont put this
-    
     if(new_game_or_not==true)
     {
         clearScreen();
         printf("\nGenerating New Board...");
         generateboard(initial_grid);
         copy_grid(initial_grid,playing_grid);
+
         clearScreen();
         printf("\n Generated New Board...");
         printf("\n>Press b to enter the game");
     }
+
+
 
     if(new_game_or_not==false)
     {
@@ -85,9 +85,8 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
         //manual entry mode
         if(mode==2)
         {   
-            if(hint_allowed==1 ){check_board_show_Errors(playing_grid,error_grid,initial_grid);}
+            if(current_loaded_game.settings.hint==1 ){check_board_show_Errors(playing_grid,error_grid,initial_grid);}
             display_board(playing_grid, selected_cell_row, selected_cell_column,error_grid,initial_grid);
-            // printf("%d",hint_allowed);
         }
 
         //algorithmic solving mode
@@ -147,6 +146,7 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
         }
 
     } while (key != ESCKEY);
+    fflush(stdin);
     return 0;
 }
 
