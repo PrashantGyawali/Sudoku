@@ -21,8 +21,8 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
     printf("'b' => manual mode\n");
     printf("'Arrow keys' => Navigation\n");
     printf("'0' => Clear the number\n");
+    printf("'Backspace' => Go back to menu\n");
     printf("'Esc' => quit\n");
-    printf("Currently No way to go back to main menu again. Terminate the program and run again");
     printf("\nPress Enter to continue...");
     getch();
     
@@ -53,7 +53,6 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
         {0, 0, 0, 0, 0, 0, 0, 0, 0}
         };
 
-    // cross_sleep(0);  //! Dont know why hint_allowed changes to 0 when i dont put this
     if(new_game_or_not==true)
     {
         clearScreen();
@@ -73,6 +72,17 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
         copy_grid(current_loaded_game.grid,playing_grid);
         copy_grid(current_loaded_game.initialgrid,initial_grid);
         copy_grid(current_loaded_game.errorgrid,error_grid);
+        printf("\n");
+        for(int i=0;i<9;i++)
+        {
+            printf("%d",initial_grid[i][i]);
+        }
+        printf("\n");
+        for(int i=0;i<9;i++)
+        {
+            printf("%d",current_loaded_game.initialgrid[i][i]);
+        }
+        cross_sleep(2000);
     }
 
     int key;
@@ -86,7 +96,9 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
         if(mode==2)
         {   
             if(current_loaded_game.settings.hint==1 )
-            {check_board_show_Errors(playing_grid,error_grid,initial_grid);}
+            {
+                check_board_show_Errors(playing_grid,error_grid,initial_grid);
+            }
             display_board(playing_grid, selected_cell_row, selected_cell_column,error_grid,initial_grid);
         }
 
@@ -121,6 +133,7 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
             playing_grid[selected_cell_row][selected_cell_column] = key - 48;
             copy_grid(error_grid,current_loaded_game.errorgrid);
             copy_grid(playing_grid,current_loaded_game.grid);
+            copy_grid(initial_grid,current_loaded_game.initialgrid);
             write_game(current_loaded_game);
         }
 
@@ -149,7 +162,12 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
             mode=2;
         }
 
-    } while (key != ESCKEY);
+        if(key==ESCKEY)
+        {
+            exit(0);
+        }
+
+    } while (key != BACKSPACE);
     fflush(stdin);
     return 0;
 }

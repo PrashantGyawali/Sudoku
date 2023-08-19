@@ -6,7 +6,8 @@
 #include "keys.c"
 #include "./headers/types.h"
 #include "./headers/types2.h"
-
+#include "./headers/boardfunctions.h"
+#include "./headers/sleep.h"
 
 //clears the screen
 
@@ -158,15 +159,15 @@ void SavedGamesMenu(Game *Self, int* has_loaded_the_game)
             int key=1;
             while(key!=BACKSPACE)
             {   clearScreen();
-                printf("+ID----Last Modified----Ai------Hints---SlowAI+\n");
+                printf("+--ID--+--Last Modified--+-Ai-+-Hints-+-SlowAI+\n");
                 for (int i = 0; i < numgames; i++)
                 {
                         if(i==selectedgame)
                         {
-                        printf("\033[47;30m %-7d \t %9d \t %d \t %d \t %d \033[0m \n",games[i].id, games[i].lastmodified, games[i].settings.ai, games[i].settings.hint, games[i].settings.slow);
+                        printf("\033[47;30m %-7d   %9d       %-5d %-7d %-7d \033[0m \n",games[i].id, games[i].lastmodified, games[i].settings.ai, games[i].settings.hint, games[i].settings.slow);
                         }
                         else{
-                        printf(" %-7d \t %9d \t %d  \t %d \t %d\n",games[i].id ,games[i].lastmodified,games[i].settings.ai,games[i].settings.hint,games[i].settings.slow);
+                        printf(" %-7d   %9d       %-5d %-7d %-7d\n",games[i].id ,games[i].lastmodified,games[i].settings.ai,games[i].settings.hint,games[i].settings.slow);
                         }
                 }
                 printf("\nPress backspace to go back to main menu");
