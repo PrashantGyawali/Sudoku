@@ -5,6 +5,8 @@
 #include <time.h>
 #include "keys.c"
 #include "./headers/types.h"
+#include "./headers/types2.h"
+
 
 //clears the screen
 
@@ -47,14 +49,15 @@ void emptyboardinit(Board a){
     }
 }
 
-void empty_Game_Init(Game *gm){
+void empty_Game_Init(Game *gm,GlGameSettings settings){
         srand(time(NULL));
         gm->lastmodified=getDateInteger();
         gm->id=rand()%100000;
-        gm->settings.ai=1;
+        gm->settings.ai=settings.ai;
+        gm->settings.gamemode=settings.gamemode;
         gm->settings.gamemode=0;
-        gm->settings.hint=1;
-        gm->settings.slow=1;
+        gm->settings.hint=settings.hints;
+        gm->settings.slow=settings.slow;
         emptyboardinit(gm->initialgrid);
         emptyboardinit(gm->errorgrid);
         emptyboardinit(gm->grid);
@@ -88,44 +91,40 @@ Game* read_games(int* numgames) {
 
 
 void write_game(Game gamedata) {
-    FILE* fs = fopen("pastgames.txt", "wb");
+    FILE* fs = fopen("pastgames.txt", "rb+");
+    
     if (fs == NULL) {
-        printf("pastgames.txt = NULL");
+        // Handle file creation and write new data
+        fs = fopen("pastgames.txt", "wb");
+        fwrite(&gamedata, sizeof(Game), 1, fs);
+        fclose(fs);
+        return;
     }
-    // Get the total number of records (size of file / size of a book structure)
+    
+    // Get the total number of records (size of file / size of Game structure)
     fseek(fs, 0, SEEK_END);
     long fileSize = ftell(fs);
     int numgames = fileSize / sizeof(Game);
 
     // Allocate memory for the array of games
-    Game* games = (Game*)malloc((numgames) * sizeof(Game));
-    if (games == NULL) {
-        perror("Memory allocation error");
-        fclose(fs);
-    }
+    Game* games = (Game*)malloc(numgames * sizeof(Game));
 
     // Read the data from the file into the array of structures
-    rewind(fs); // Move file pointer back to the beginning
+    rewind(fs);
+    fread(games, sizeof(Game), numgames, fs);
     fclose(fs);
 
-    //Empty the file
-    fclose(fopen("pastgames.txt", "w"));
-
-
-    //update the file
+    // Update the file
     fs = fopen("pastgames.txt", "wb");
-    if (fs == NULL) {
-    printf("pastgames.txt = NULL");
-    }
-    fwrite(&gamedata,sizeof(Game),1,fs);
-    for(int i=0;i<numgames;i++)
-    {
-        if(i!=gamedata.id){
-        fwrite(&games[i], sizeof(Game), 1, fs);
+    fwrite(&gamedata, sizeof(Game), 1, fs);    
+    for (int i = 0; i < numgames; i++) {
+        if (games[i].id != gamedata.id) {
+            fwrite(&games[i], sizeof(Game), 1, fs);
         }
     }
     fclose(fs);
 
+    free(games); // Free the allocated memory
 }
 
 
@@ -153,30 +152,8 @@ void SavedGamesMenu(Game *Self, int* has_loaded_the_game)
 
         Game* games = read_games(&numgames);
 
-//Was used to initialize empty games to test
-        // FILE *fs;
-        // fs=fopen("pastgames.txt","a+");
-        // fseek(fs,0,SEEK_END);
-        // //empty Game init
         Game bk;
-        empty_Game_Init(&bk);
-        // printf("\nAdded new game info %d %d",bk.id,bk.lastmodified);
-        // sleep(2000);
-
-        // fwrite(&bk,sizeof(bk),1,fs);
-        // fclose(fs);
-        
-        int test_grid[9][9]={
-        {5, 3, 4, 6, 7, 8, 9, 1, 2},
-        {6, 7, 2, 1, 9, 5, 3, 4, 8},
-        {1, 9, 8, 3, 4, 2, 5, 6, 7},
-        {8, 5, 9, 7, 6, 1, 4, 2, 3},
-        {4, 2, 6, 8, 5, 3, 7, 9, 1},
-        {7, 1, 3, 9, 2, 4, 8, 5, 6},
-        {9, 6, 1, 5, 3, 7, 2, 8, 4},
-        {2, 8, 7, 4, 1, 9, 6, 3, 5},
-        {3, 4, 5, 2, 8, 6, 1, 7, 9}
-    };
+        // empty_Game_Init(&bk);
         if (games != NULL) {
             int key=1;
             while(key!=BACKSPACE)

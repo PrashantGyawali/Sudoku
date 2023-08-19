@@ -18,4 +18,5 @@ typedef struct Gamesdata {
     Board errorgrid;
 } Game;
 
+
 #endif // __GAME_DEFINED__

@@ -4,18 +4,14 @@
 #include<stdlib.h>
 #include "keys.c"
 #include "./headers/boardfunctions.h"
+#include "./headers/types.h"
+#include "./headers/types2.h"
 #include "filereader.c"
 #include "maingame.c"
 #include "tutorialpages.c"
 #define MENU_SIZE 6
 
-struct GlobalGameSettings{
-    int ai;
-    int hints;
-    int gamemode;
-    int slow;
-}settings;
-
+GlGameSettings settings;
 
 void displayMenu(int selectedOption) {
     clearScreen();
@@ -89,7 +85,7 @@ void tutorialmenu()
 }
 
 //function to format the display layout of the settings menu (without input logic)
-void displaySettings(int selectedoption,struct GlobalGameSettings *settings){
+void displaySettings(int selectedoption,GlGameSettings *settings){
     clearScreen();
 
     char menu_options[4][50][50] = {{"Ai Not Allowed","AI Allowed"}, {"Hints Not Allowed","Hints Allowed"}, {"Normal","Childmode"},{"Fast(AI)","Slow(AI)"}};
@@ -122,7 +118,7 @@ void displaySettings(int selectedoption,struct GlobalGameSettings *settings){
 }
 
 //Enter the settings menu (contains inputs and logics)
-void SettingsMenu(struct GlobalGameSettings *settings){
+void SettingsMenu(GlGameSettings *settings){
     int selectedOption=1;
     
 
@@ -166,16 +162,18 @@ int main() {
     int has_loaded_the_game=0;
     Game LoadedGame;
     Game NewGame;
-    empty_Game_Init(&LoadedGame);
-    empty_Game_Init(&NewGame);
+    settings.ai=1,settings.gamemode=1,settings.hints=1,settings.slow=1;
+
+    empty_Game_Init(&LoadedGame,settings);
+    empty_Game_Init(&NewGame,settings);
 
 
     int selectedOption = 1;
     char key;
-    settings.ai=1,settings.gamemode=1,settings.hints=1,settings.slow=1;
 
     while(1)
     {
+
     do {
         selectedOption=selectedOption>6?1:selectedOption;
         selectedOption=selectedOption<1?6:selectedOption;
@@ -210,7 +208,19 @@ if(key==ENTERKEY)
 switch(selectedOption){
         //will create a new game
         case 1:
+            write_game(NewGame);
+            printf("\n %d %d",NewGame.id,NewGame.settings.ai);
+            cross_sleep(1500);
             mainGame(NewGame,true);
+
+            //initialize the new game again
+            empty_Game_Init(&NewGame,settings);
+            NewGame.settings.ai=settings.ai;
+            NewGame.settings.gamemode=settings.gamemode;
+            NewGame.settings.hint=settings.hints;
+            NewGame.settings.gamemode=settings.gamemode;
+            NewGame.settings.slow=settings.slow;
+
         break;
 
 

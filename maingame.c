@@ -4,6 +4,7 @@
 #include<stdlib.h>
 #include "./headers/boardfunctions.h"
 #include "keys.c"
+#include "filereader.c"
 #include "./headers/types.h"
 
 #define N 9
@@ -118,6 +119,9 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
         if (key >= 48 && key <= 57 && initial_grid[selected_cell_row][selected_cell_column]==0) 
         {  
             playing_grid[selected_cell_row][selected_cell_column] = key - 48;
+            copy_grid(error_grid,current_loaded_game.errorgrid);
+            copy_grid(playing_grid,current_loaded_game.grid);
+            write_game(current_loaded_game);
         }
 
         //handle arrwokeys
