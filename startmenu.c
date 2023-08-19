@@ -75,7 +75,7 @@ void tutorialmenu()
         {    exit(0);
         }
 
-        if(key==SPACE)
+        if(key==BACKSPACE)
         {
             break;
         }
@@ -209,8 +209,6 @@ switch(selectedOption){
         //will create a new game
         case 1:
             write_game(NewGame);
-            printf("\n %d %d",NewGame.id,NewGame.settings.ai);
-            cross_sleep(1500);
             mainGame(NewGame,true);
 
             //initialize the new game again
