@@ -88,7 +88,7 @@ void tutorialmenu()
 void displaySettings(int selectedoption,GlGameSettings *settings){
     clearScreen();
 
-    char menu_options[4][50][50] = {{"Ai Not Allowed","AI Allowed"}, {"Hints Not Allowed","Hints Allowed"}, {"Normal","Childmode"},{"Fast(AI)","Slow(AI)"}};
+    char menu_options[4][50][50] = {{"Ai Not Allowed","AI Allowed"}, {"Hints Not Allowed","Hints Allowed"}, {"Normal","Hardcore"},{"Fast(AI)","Slow(AI)"}};
     int* info[4]={&settings->ai,&settings->hints,&settings->gamemode,&settings->slow};
 
     // Display the menu options
@@ -131,9 +131,10 @@ void SettingsMenu(GlGameSettings *settings){
         key = getch();
 
         // Process arrow key input
-        if (key == 0 || key == 224) 
-        {
-            key = getch(); // Extended key code
+            if(key==ESCKEY)
+            {
+                exit(0);
+            }
             if (key == UPARROW ) { // Up arrow
                 selectedOption--;
             } else if (key == DOWNARROW ) { // Down arrow
@@ -142,11 +143,7 @@ void SettingsMenu(GlGameSettings *settings){
             else if (key == LEFTARROW || key==RIGHTARROW) { // Right arrow or left arrow
                 toggle(info[selectedOption-1],0,1,1);
             }
-            if(key==ESCKEY)
-            {
-                exit(0);
-            }
-        }
+
     }
     while (key != 13); // Repeat until Enter key is pressed
 }
@@ -162,7 +159,7 @@ int main() {
     int has_loaded_the_game=0;
     Game LoadedGame;
     Game NewGame;
-    settings.ai=1,settings.gamemode=1,settings.hints=1,settings.slow=1;
+    settings.ai=1,settings.gamemode=0,settings.hints=1,settings.slow=1;
 
     empty_Game_Init(&LoadedGame,settings);
     empty_Game_Init(&NewGame,settings);
@@ -264,9 +261,6 @@ fflush(stdin);
 
 
     } while (key != ESCKEY); // Repeat until Enter key is pressed
-
-
-    // SettingsMenu(&settings);
 
 }
 return 0;

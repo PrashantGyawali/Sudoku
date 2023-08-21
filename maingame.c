@@ -6,6 +6,7 @@
 #include "keys.c"
 #include "filereader.c"
 #include "./headers/types.h"
+#include "hardcore.c"
 
 #define N 9
 
@@ -100,6 +101,21 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
                 check_board_show_Errors(playing_grid,error_grid,initial_grid);
             }
             display_board(playing_grid, selected_cell_row, selected_cell_column,error_grid,initial_grid);
+
+
+            if(current_loaded_game.settings.gamemode==1)
+            {
+                for(int i=0;i<9;i++)
+                {
+                    for(int j=0;j<9;j++)
+                    {
+                        if(error_grid[i][j]==1)
+                        {
+                            deletegmae();
+                        }
+                    }
+                }
+            }
         }
 
         //algorithmic solving mode

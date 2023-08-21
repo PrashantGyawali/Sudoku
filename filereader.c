@@ -56,7 +56,6 @@ void empty_Game_Init(Game *gm,GlGameSettings settings){
         gm->id=rand()%100000;
         gm->settings.ai=settings.ai;
         gm->settings.gamemode=settings.gamemode;
-        gm->settings.gamemode=0;
         gm->settings.hint=settings.hints;
         gm->settings.slow=settings.slow;
         emptyboardinit(gm->initialgrid);
