@@ -28,18 +28,6 @@ int getDateInteger() {
     return date_integer;
 }
 
-
-void copy_grid2(Board* src,Board* destination)
-{
-    for(int i=0;i<9;i++)
-    {
-        for(int j=0;j<9;j++)
-        {
-            *destination[i][j]=*src[i][j];
-        }
-    }
-}
-
 void emptyboardinit(Board a){
     for(int i=0;i<9;i++)
     {
@@ -90,7 +78,7 @@ Game* read_games(int* numgames) {
 }
 
 
-void write_game(Game gamedata) {
+void write_game(Game gamedata,char update_or_del) {
     FILE* fs = fopen("pastgames.txt", "rb+");
     
     if (fs == NULL) {
@@ -116,7 +104,10 @@ void write_game(Game gamedata) {
 
     // Update the file
     fs = fopen("pastgames.txt", "wb");
-    fwrite(&gamedata, sizeof(Game), 1, fs);    
+    if(update_or_del=='u')
+    {
+        fwrite(&gamedata, sizeof(Game), 1, fs);   
+    } 
     for (int i = 0; i < numgames; i++) {
         if (games[i].id != gamedata.id) {
             fwrite(&games[i], sizeof(Game), 1, fs);
@@ -158,15 +149,15 @@ void SavedGamesMenu(Game *Self, int* has_loaded_the_game)
             int key=1;
             while(key!=BACKSPACE)
             {   clearScreen();
-                printf("+--ID--+--Last Modified--+-Ai-+-Hints-+-SlowAI+\n");
+                printf("+--ID--+--Last Modified--+-Ai-+-Hints-+-SlowAI-+-Hardcore-+\n");
                 for (int i = 0; i < numgames; i++)
                 {
                         if(i==selectedgame)
                         {
-                        printf("\033[47;30m %-7d   %9d       %-5d %-7d %-7d \033[0m \n",games[i].id, games[i].lastmodified, games[i].settings.ai, games[i].settings.hint, games[i].settings.slow);
+                        printf("\033[47;30m %-7d   %9d       %-5d %-7d %-7d  %-8d\033[0m \n",games[i].id, games[i].lastmodified, games[i].settings.ai, games[i].settings.hint, games[i].settings.slow,games[i].settings.gamemode);
                         }
                         else{
-                        printf(" %-7d   %9d       %-5d %-7d %-7d\n",games[i].id ,games[i].lastmodified,games[i].settings.ai,games[i].settings.hint,games[i].settings.slow);
+                        printf(" %-7d   %9d       %-5d %-7d %-7d  %-8d\n",games[i].id ,games[i].lastmodified,games[i].settings.ai,games[i].settings.hint,games[i].settings.slow,games[i].settings.gamemode);
                         }
                 }
                 printf("\nPress backspace to go back to main menu");

@@ -177,11 +177,19 @@ int main() {
         displayMenu(selectedOption);
         if(selectedOption==1){
         printf("\nNow playing New Game#%d",NewGame.id);
+            if(settings.gamemode==1)
+            {
+                printf("\n!! WARNING: [HARDCORE MODE ENABLED] ONE WRONG MOVE AND THE GAME WILL BE DELETED !!");
+            }
         }
         if(selectedOption==2){
             if( has_loaded_the_game)
             {
                 printf("\nNow playing Loaded Game#%d",LoadedGame.id);
+                if(LoadedGame.settings.gamemode==1)
+                {
+                    printf("\n!! WARNING: [HARDCORE MODE ENABLED] ONE WRONG MOVE AND THE GAME WILL BE DELETED !!");
+                }
             }
             else{
                 printf("\nNo games loaded");
@@ -205,7 +213,7 @@ if(key==ENTERKEY)
 switch(selectedOption){
         //will create a new game
         case 1:
-            write_game(NewGame);
+            write_game(NewGame,'u');
             mainGame(NewGame,true);
 
             //initialize the new game again

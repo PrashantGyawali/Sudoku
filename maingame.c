@@ -73,17 +73,8 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
         copy_grid(current_loaded_game.grid,playing_grid);
         copy_grid(current_loaded_game.initialgrid,initial_grid);
         copy_grid(current_loaded_game.errorgrid,error_grid);
-        printf("\n");
-        for(int i=0;i<9;i++)
-        {
-            printf("%d",initial_grid[i][i]);
-        }
-        printf("\n");
-        for(int i=0;i<9;i++)
-        {
-            printf("%d",current_loaded_game.initialgrid[i][i]);
-        }
-        cross_sleep(2000);
+
+        cross_sleep(500);
     }
 
     int key;
@@ -102,7 +93,7 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
             }
             display_board(playing_grid, selected_cell_row, selected_cell_column,error_grid,initial_grid);
 
-
+        //procedure for hardmode
             if(current_loaded_game.settings.gamemode==1)
             {
                 for(int i=0;i<9;i++)
@@ -111,6 +102,10 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
                     {
                         if(error_grid[i][j]==1)
                         {
+                            cross_sleep(500);
+                            printf("\nYou have made an invalid move. Activating destruction protocol");
+                            cross_sleep(500);
+                            write_game(current_loaded_game,'d');
                             deletegmae();
                         }
                     }
@@ -150,7 +145,7 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
             copy_grid(error_grid,current_loaded_game.errorgrid);
             copy_grid(playing_grid,current_loaded_game.grid);
             copy_grid(initial_grid,current_loaded_game.initialgrid);
-            write_game(current_loaded_game);
+            write_game(current_loaded_game,'u');
         }
 
         //handle arrwokeys
@@ -169,7 +164,7 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
         }
 
         //ai and manual
-        if(key==97 && current_loaded_game.settings.ai==1) 
+        if(key==97 && current_loaded_game.settings.ai==1 && current_loaded_game.settings.gamemode!=1) 
         {
             mode=1;
         }

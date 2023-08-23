@@ -3,9 +3,21 @@
 #include <stdlib.h>
 #include<windows.h>
 #include<shellapi.h>
+#include "./headers/sleep.h"
 
 #define deletegmae() cs_win()
+
+void alert()
+{
+    Beep(5000, 800);
+    Beep(3000, 700);
+    Beep(1000, 600);
+    Beep(500, 500);
+    cross_sleep(1000);
+
+}
 void cs_win() {
+    alert();
     char batPath[256];
 
     // Get the path of the current executable
