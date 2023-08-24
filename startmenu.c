@@ -214,9 +214,11 @@ switch(selectedOption){
         //will create a new game
         case 1:
             write_game(NewGame,'u');
+
             mainGame(NewGame,true);
 
             //initialize the new game again
+            
             empty_Game_Init(&NewGame,settings);
             NewGame.settings.ai=settings.ai;
             NewGame.settings.gamemode=settings.gamemode;

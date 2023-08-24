@@ -224,7 +224,7 @@ for(i=0;i<9;i++)
     }
 }
 
-bool completevalid(Board a)
+bool completevalid(Board a, Board errorboard)
 {
     int row_sum=0;
     int row_product=1;
@@ -239,6 +239,10 @@ bool completevalid(Board a)
             row_product*=a[i][j];
             col_sum+=a[j][i];
             col_product*=a[j][i];
+            if(errorboard[i][j]!=0)
+            {
+                return false;
+            }
             }
         }
     if(row_sum!=45 ||col_sum!=45||row_product!=362880 ||col_product!=362880)
@@ -316,7 +320,7 @@ bool is_safe(Board grid, int row, int col, int num) {
 }
 
 // Solves the sudoku board, has choice for speed, and rendering or not as well as selected row and column(used for rendering)
-bool solve_sudoku(Board grid,int selected_cell_column,int selected_cell_row,Board errorgrid,Board initial_grid,bool slow,bool display) {
+bool solve_sudoku(Board grid,int selected_cell_column,int selected_cell_row,Board errorgrid,Board initial_grid,int slow, int display) {
     int row, col;
     // Find an empty cell (0) in the grid
     if (!find_empty_cell(grid, &row, &col)) {

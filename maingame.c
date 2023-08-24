@@ -57,6 +57,7 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
     if(new_game_or_not==true)
     {
         clearScreen();
+
         printf("\nGenerating New Board...\n Please restart if it takes too long");
         generateboard(initial_grid);
         copy_grid(initial_grid,playing_grid);
@@ -74,7 +75,6 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
         copy_grid(current_loaded_game.initialgrid,initial_grid);
         copy_grid(current_loaded_game.errorgrid,error_grid);
 
-        cross_sleep(500);
     }
 
     int key;
