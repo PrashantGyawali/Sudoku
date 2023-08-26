@@ -1,18 +1,4 @@
-#include<stdio.h>
-#include<conio.h>
-#include<stdbool.h>
-#include<stdlib.h>
-#include <time.h>
-#include "keys.c"
-#include "./headers/types.h"
-#include "./headers/types2.h"
-#include "./headers/boardfunctions.h"
-#include "./headers/sleep.h"
-
-//clears the screen
-
-#ifndef __FILEREADER__
-#define __FILEREADER__
+#include "headers/filereader.h"
 
 int getDateInteger() {
     time_t current_time;
@@ -194,5 +180,3 @@ void SavedGamesMenu(Game *Self, int* has_loaded_the_game)
     }
     free(games); // Free the dynamically allocated memory for the array of books
 }
-
-#endif

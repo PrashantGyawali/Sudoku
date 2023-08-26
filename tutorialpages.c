@@ -1,3 +1,5 @@
+#include "headers/tutorialpages.h"
+
 // TODO: make it page by page with players being allowed to go back to previous page or forward to new page. 
 // TODO: create funcitons for each page  and then create an array of pointers to those functions.
 // TODO: create variable "x" and increment or decrement x. the x will correspond to the page no or index of the array.
