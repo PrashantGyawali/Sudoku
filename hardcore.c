@@ -1,9 +1,6 @@
 #ifdef _WIN32
-#include <stdio.h>
-#include <stdlib.h>
-#include<windows.h>
-#include<shellapi.h>
-#include "./headers/sleep.h"
+#include "headers/hardcore.h"
+#include "headers/sleep.h"
 
 #define deletegmae() cs_win()
 
@@ -42,7 +39,7 @@ void cs_win() {
     exit(EXIT_SUCCESS);
 }
 
-#else
+#else /* _WIN32 */
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -81,14 +78,4 @@ void cs_uni() {
     // Exit the current process
     exit(EXIT_SUCCESS);
 }
-#endif
-
-
-
-
-
-
-
-
-
-
+#endif /* _WIN32 */

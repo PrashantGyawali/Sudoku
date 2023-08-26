@@ -1,14 +1,19 @@
+#ifndef _WIN32
+#error "This game can only be compiled on Windows."
+#endif
+
 #include <stdio.h>
 #include <conio.h>
 #include <stdbool.h>
 #include<stdlib.h>
-#include "keys.c"
-#include "./headers/boardfunctions.h"
-#include "./headers/types.h"
-#include "./headers/types2.h"
-#include "filereader.c"
-#include "maingame.c"
-#include "tutorialpages.c"
+#include "headers/keys.h"
+#include "headers/boardfunctions.h"
+#include "headers/types.h"
+#include "headers/types2.h"
+#include "headers/filereader.h"
+#include "headers/maingame.h"
+#include "headers/tutorialpages.h"
+
 #define MENU_SIZE 6
 
 GlGameSettings settings;
@@ -55,7 +60,7 @@ if((*a)==min)
 void tutorialmenu()
 {
     int pageno;
-    void (*pagearray[3]) () ={page1,page2,page3};    
+    PageFn pagearray[3] ={page1,page2,page3}; 
     printf("Welcome to the tutorial\n Let's start.\n Use enter or backspace to change pages");
     pageno=1;
     int key=0;
@@ -148,14 +153,9 @@ void SettingsMenu(GlGameSettings *settings){
     while (key != 13); // Repeat until Enter key is pressed
 }
 
-
-
-int main();
 int main() {
-
     //initialize loadedgame and new game. based on the option selected, one of this will be passes into the game with additional bool
     // param tlling wheteher new game or old game
-
     int has_loaded_the_game=0;
     Game LoadedGame;
     Game NewGame;
@@ -168,10 +168,8 @@ int main() {
     int selectedOption = 1;
     char key;
 
-    while(1)
-    {
-
-    do {
+    while(1) {
+        do {
         selectedOption=selectedOption>6?1:selectedOption;
         selectedOption=selectedOption<1?6:selectedOption;
         displayMenu(selectedOption);

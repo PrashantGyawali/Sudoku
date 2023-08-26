@@ -1,15 +1,4 @@
-#include <stdio.h>
-#include <stdbool.h>
-#include <conio.h>
-#include<stdlib.h>
-#include "./headers/boardfunctions.h"
-#include "keys.c"
-#include "filereader.c"
-#include "./headers/types.h"
-#include "hardcore.c"
-
-#define N 9
-
+#include "headers/maingame.h"
 
 int mainGame(Game current_loaded_game, bool new_game_or_not) {
     //take inputs is ai_allowed, hints_allowed , init_board
@@ -84,7 +73,7 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
         selected_cell_column = selected_cell_column > (9 - 1) ? 0 : selected_cell_column;
         selected_cell_row = selected_cell_row < 0 ? (9 - 1) : selected_cell_row;
         selected_cell_column = selected_cell_column < 0 ? (9 - 1) : selected_cell_column;
-        //manual entry mode
+       //manual entry mode
         if(mode==2)
         {   
             if(current_loaded_game.settings.hint==1 )
@@ -182,6 +171,3 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
     fflush(stdin);
     return 0;
 }
-
-
-

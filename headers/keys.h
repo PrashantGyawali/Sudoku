@@ -1,3 +1,6 @@
+#ifndef __KEYS__
+#define __KEYS__
+
 #define DOWNARROW 80
 #define UPARROW 72
 #define LEFTARROW 75
@@ -7,7 +10,4 @@
 #define ENTERKEY 13
 #define SPACE 32
 
-
-
-
-
+#endif
