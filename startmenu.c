@@ -1,5 +1,5 @@
 #ifndef _WIN32
-#error "This game can only be compiled on Windows."
+#error This game can only be compiled on Windows.
 #endif
 
 #include <stdio.h>

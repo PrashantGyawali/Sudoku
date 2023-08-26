@@ -1,16 +1,17 @@
 # Sudoku
 
 Terminal sudoku with solver ai  
+
 ### How to run?
-Run a.exe or compile startgame.c  yourself
+
+Run `sudoku.exe` or compile using `make`
 
 ### TODO
 
 - make better tutorial
-
 - Remove unncessary code and use structures for readability  
 
-## Note: Only tested on windows, dont know if it will work on other platforms
+## Note: Only compiles on Windows 
 
 #### Game Images
 
