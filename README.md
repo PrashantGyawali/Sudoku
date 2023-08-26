@@ -2,7 +2,7 @@
 
 Terminal sudoku with solver ai  
 ### How to run?
-Run a.exe or compile startgame.c  yourself
+Run a.exe or compile startmenu.c  yourself
 
 ### TODO
 
