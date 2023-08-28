@@ -1,4 +1,4 @@
-#include "headers/maingame.h"
+#include "../headers/maingame.h"
 
 int mainGame(Game current_loaded_game, bool new_game_or_not) {
     //take inputs is ai_allowed, hints_allowed , init_board

@@ -1,6 +1,6 @@
 #ifdef _WIN32
-#include "headers/hardcore.h"
-#include "headers/sleep.h"
+#include "../headers/hardcore.h"
+#include "../headers/sleep.h"
 
 #define deletegmae() cs_win()
 

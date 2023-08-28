@@ -1,4 +1,4 @@
-#include "headers/boardfunctions.h"
+#include "../headers/boardfunctions.h"
 
 //displays each cell with proper coloring
 void display_cell(int value, int isSelected, int errored,int initial) {
