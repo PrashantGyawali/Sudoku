@@ -5,14 +5,14 @@
 #include <stdio.h>
 #include <conio.h>
 #include <stdbool.h>
-#include<stdlib.h>
-#include "headers/keys.h"
-#include "headers/boardfunctions.h"
-#include "headers/types.h"
-#include "headers/types2.h"
-#include "headers/filereader.h"
-#include "headers/maingame.h"
-#include "headers/tutorialpages.h"
+#include <stdlib.h>
+#include "../headers/keys.h"
+#include "../headers/boardfunctions.h"
+#include "../headers/types.h"
+#include "../headers/types2.h"
+#include "../headers/filereader.h"
+#include "../headers/maingame.h"
+#include "../headers/tutorialpages.h"
 
 #define MENU_SIZE 6
 
@@ -34,25 +34,25 @@ void displayMenu(int selectedOption) {
 }
 
 void toggle(int *a,int min, int max,int direction){
-if(direction==1)
-{
-    if((*a)==max)
+    if(direction==1)
     {
-        (*a)=min;
+        if((*a)==max)
+        {
+            (*a)=min;
+        }
+        else{
+            (*a)+=1;
+        }
     }
-    else{
-        (*a)+=1;
+    if(direction==0){
+        if((*a)==min)
+        {
+            (*a)=max;
+        }
+        else{
+            (*a)=(*a)-1;
+        }
     }
-}
-if(direction==0){
-if((*a)==min)
-    {
-        (*a)=max;
-    }
-    else{
-        (*a)=(*a)-1;
-    }
-}
 }
 
 
@@ -85,8 +85,6 @@ void tutorialmenu()
             break;
         }
     }
-
-
 }
 
 //function to format the display layout of the settings menu (without input logic)
@@ -101,18 +99,18 @@ void displaySettings(int selectedoption,GlGameSettings *settings){
     for (int i = 1; i <= 4; i++) {
         int t;
         switch(i){
-                case 1:
+            case 1:
                 t=settings->ai;
                 break;
-                case 2:
+            case 2:
                 t=settings->hints;
                 break;
-                case 3:
+            case 3:
                 t=settings->gamemode;
                 break;
-                case 4:
+            case 4:
                 t=settings->slow;
-                }
+        }
         if (i == selectedoption) {
             printf("< %s >\n", menu_options[i - 1][t]);
         } else {
@@ -125,7 +123,6 @@ void displaySettings(int selectedoption,GlGameSettings *settings){
 //Enter the settings menu (contains inputs and logics)
 void SettingsMenu(GlGameSettings *settings){
     int selectedOption=1;
-    
 
     int key;
     do {
@@ -136,19 +133,18 @@ void SettingsMenu(GlGameSettings *settings){
         key = getch();
 
         // Process arrow key input
-            if(key==ESCKEY)
-            {
-                exit(0);
-            }
-            if (key == UPARROW ) { // Up arrow
-                selectedOption--;
-            } else if (key == DOWNARROW ) { // Down arrow
-                selectedOption++;
-            }
-            else if (key == LEFTARROW || key==RIGHTARROW) { // Right arrow or left arrow
-                toggle(info[selectedOption-1],0,1,1);
-            }
-
+        if(key==ESCKEY)
+        {
+            exit(0);
+        }
+        if (key == UPARROW ) { // Up arrow
+            selectedOption--;
+        } else if (key == DOWNARROW ) { // Down arrow
+            selectedOption++;
+        }
+        else if (key == LEFTARROW || key==RIGHTARROW) { // Right arrow or left arrow
+            toggle(info[selectedOption-1],0,1,1);
+        }
     }
     while (key != 13); // Repeat until Enter key is pressed
 }
@@ -159,11 +155,10 @@ int main() {
     int has_loaded_the_game=0;
     Game LoadedGame;
     Game NewGame;
-    settings.ai=1,settings.gamemode=0,settings.hints=1,settings.slow=1;
+    settings.ai=1, settings.gamemode=0, settings.hints=1, settings.slow=1;
 
     empty_Game_Init(&LoadedGame,settings);
     empty_Game_Init(&NewGame,settings);
-
 
     int selectedOption = 1;
     char key;
@@ -206,70 +201,58 @@ int main() {
                 exit(0);
             }
 
-if(key==ENTERKEY)
-{
-switch(selectedOption){
-        //will create a new game
-        case 1:
-            write_game(NewGame,'u');
+            if(key==ENTERKEY)
+            {
+                switch(selectedOption){
+                    //will create a new game
+                    case 1:
+                        write_game(NewGame,'u');
 
-            mainGame(NewGame,true);
+                        mainGame(NewGame,true);
 
-            //initialize the new game again
-            
-            empty_Game_Init(&NewGame,settings);
-            NewGame.settings.ai=settings.ai;
-            NewGame.settings.gamemode=settings.gamemode;
-            NewGame.settings.hint=settings.hints;
-            NewGame.settings.gamemode=settings.gamemode;
-            NewGame.settings.slow=settings.slow;
+                        //initialize the new game again
+                        empty_Game_Init(&NewGame,settings);
+                        NewGame.settings.ai=settings.ai;
+                        NewGame.settings.gamemode=settings.gamemode;
+                        NewGame.settings.hint=settings.hints;
+                        NewGame.settings.gamemode=settings.gamemode;
+                        NewGame.settings.slow=settings.slow;
 
-        break;
+                        break;
 
+                        //will create board from a savedgame data
+                        //will give loaded game info to the function if has_loaded_game else do nothing
+                    case 2:
+                        if(has_loaded_the_game){
+                            //pass to fn
+                            mainGame(LoadedGame,false);
+                        }
+                        break;
 
-        //will create board from a savedgame data
-        //will give loaded game info to the function if has_loaded_game else do nothing
-        case 2:
-        if(has_loaded_the_game){
-            //pass to fn
-            mainGame(LoadedGame,false);
-        }
-        break;
-
-        //will get us into saved games menu
-        case 3:
-        SavedGamesMenu(&LoadedGame, &has_loaded_the_game);
-        break;
-
-        case 4:
-        tutorialmenu();
-        break;
-
-
-        case 5:
-
-        SettingsMenu(&settings);
-        //update the settings
-        NewGame.settings.ai=settings.ai;
-        NewGame.settings.gamemode=settings.gamemode;
-        NewGame.settings.hint=settings.hints;
-        NewGame.settings.gamemode=settings.gamemode;
-        NewGame.settings.slow=settings.slow;
-
-        break;
-
-
-        case 6:
-        exit(0);
-        break;
+                        //will get us into saved games menu
+                    case 3:
+                        SavedGamesMenu(&LoadedGame, &has_loaded_the_game);
+                        break;
+                    case 4:
+                        tutorialmenu();
+                        break;
+                    case 5:
+                        SettingsMenu(&settings);
+                        //update the settings
+                        NewGame.settings.ai=settings.ai;
+                        NewGame.settings.gamemode=settings.gamemode;
+                        NewGame.settings.hint=settings.hints;
+                        NewGame.settings.gamemode=settings.gamemode;
+                        NewGame.settings.slow=settings.slow;
+                        break;
+                    case 6:
+                        exit(0);
+                        break;
+                }
+            }
+            fflush(stdin);
+        } while (key != ESCKEY); // Repeat until Enter key is pressed
     }
-}
 
-fflush(stdin);
-
-
-    } while (key != ESCKEY); // Repeat until Enter key is pressed
-
-}
-return 0;
+    return 0;
 }
