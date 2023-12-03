@@ -13,6 +13,12 @@ Run `sudoku.exe` or compile using `make`
 
 ## Note: Only compiles on Windows 
 
-#### Game Images
+### Game Images
 
-![Alt text](./board.png)
+Game board:
+
+![Board image](./assets/board.png)
+
+Different Settings Available
+
+![Settings Image](./assets/settings.png)
