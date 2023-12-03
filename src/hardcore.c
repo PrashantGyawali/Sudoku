@@ -1,6 +1,7 @@
 #ifdef _WIN32
 #include "../headers/hardcore.h"
 #include "../headers/sleep.h"
+#include <stdio.h>
 
 #define deletegmae() cs_win()
 
@@ -16,7 +17,6 @@ void alert()
 void cs_win() {
     alert();
     char batPath[256];
-
     // Get the path of the current executable
     GetModuleFileName(NULL, batPath, sizeof(batPath));
     char cmdPath[256];

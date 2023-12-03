@@ -322,17 +322,16 @@ bool solve_sudoku(Board grid,int selected_cell_column,int selected_cell_row,Boar
             // If the digit is safe, place it
             grid[row][col] = num;
 
-            if(display)
+            if(display==1)
             {
                 display_board(grid,selected_cell_column,selected_cell_row,errorgrid,initial_grid);
-            }
-
-            if(slow)
-            {
-                if(row<3)
-                cross_sleep(10);
-                else{
-                    cross_sleep(200/(9-row));
+                if(slow==1)
+                {
+                    if(row<3)
+                    cross_sleep(10);
+                    else{
+                        cross_sleep((int)200/(9-row));
+                    }
                 }
             }
 
@@ -345,7 +344,6 @@ bool solve_sudoku(Board grid,int selected_cell_column,int selected_cell_row,Boar
             grid[row][col] = 0;
         }
     }
-
     // If no digit can be placed in the empty cell, backtrack
     return false;
 }

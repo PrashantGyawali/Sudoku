@@ -54,6 +54,9 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
         clearScreen();
         printf("\n Generated New Board...");
         printf("\n>Press b to enter the game");
+
+        //for some reason the slo gets changes to 0 when it is here so i have to update it again
+        slow=current_loaded_game.settings.slow;
     }
 
 
@@ -63,8 +66,14 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
         copy_grid(current_loaded_game.grid,playing_grid);
         copy_grid(current_loaded_game.initialgrid,initial_grid);
         copy_grid(current_loaded_game.errorgrid,error_grid);
-
+        slow=current_loaded_game.settings.slow;
     }
+
+    //First save 
+    copy_grid(error_grid,current_loaded_game.errorgrid);
+    copy_grid(playing_grid,current_loaded_game.grid);
+    copy_grid(initial_grid,current_loaded_game.initialgrid);
+    write_game(current_loaded_game,'u');
 
     int key;
     do {
@@ -121,6 +130,11 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
                 printf("Not valid board.\n");
             }
             mode=2;
+            
+            copy_grid(error_grid,current_loaded_game.errorgrid);
+            copy_grid(playing_grid,current_loaded_game.grid);
+            copy_grid(initial_grid,current_loaded_game.initialgrid);
+            write_game(current_loaded_game,'u');
         }
 
         
@@ -153,11 +167,11 @@ int mainGame(Game current_loaded_game, bool new_game_or_not) {
         }
 
         //ai and manual
-        if(key==97 && current_loaded_game.settings.ai==1 && current_loaded_game.settings.gamemode!=1) 
+        if(key==97 && current_loaded_game.settings.ai==1 && current_loaded_game.settings.gamemode!=1) //ai
         {
             mode=1;
         }
-        if(key==98)
+        if(key==98) //manual
         {
             mode=2;
         }
